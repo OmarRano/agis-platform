@@ -90,18 +90,7 @@ const Signup = () => {
       icon: <BusinessCenter />,
       description: 'AGIS-certified property agent'
     },
-    {
-      value: 'surveyor',
-      label: 'Surveyor',
-      icon: <Engineering />,
-      description: 'Professional land surveyor'
-    },
-    {
-      value: 'developer',
-      label: 'Estate Developer',
-      icon: <Home />,
-      description: 'Real estate development company'
-    },
+    // Removed 'surveyor' and 'developer' account types per request
   ];
 
   const specializations = [
@@ -295,7 +284,7 @@ const Signup = () => {
         );
 
       case 2:
-        if (!['agent', 'surveyor', 'developer'].includes(formData.userType)) {
+        if (formData.userType !== 'agent') {
           return (
             <Box sx={{ textAlign: 'center', py: 4 }}>
               <Typography variant="h6" gutterBottom>
