@@ -16,6 +16,7 @@ import {
   Security,
   TrendingUp,
 } from '@mui/icons-material';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -159,10 +160,23 @@ const Home = () => {
           <Typography variant="h6" color="text.secondary" gutterBottom sx={{ mb: 4 }}>
             Join thousands of trusted users and agents in Nigeria's first digital AGIS marketplace
           </Typography>
-          <Button variant="contained" size="large" sx={{ mr: 2 }}>
+          <Button
+            variant="contained"
+            size="large"
+            sx={{ mr: 2 }}
+            component={RouterLink}
+            to="/signup"
+            state={{ userType: 'buyer' }}
+          >
             Join as User
           </Button>
-          <Button variant="outlined" size="large">
+          <Button
+            variant="outlined"
+            size="large"
+            component={RouterLink}
+            to="/signup"
+            state={{ userType: 'agent' }}
+          >
             Join as Agent
           </Button>
         </Container>

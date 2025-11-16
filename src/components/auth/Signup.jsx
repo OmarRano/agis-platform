@@ -28,15 +28,17 @@ import {
   ArrowBack,
   ArrowForward,
 } from '@mui/icons-material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import AuthLayout from './AuthLayout';
 
 const Signup = () => {
+  const location = useLocation();
+
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     // Step 0: Account Type
-    userType: '',
+    userType: location?.state?.userType || '',
     
     // Step 1: Basic Info
     firstName: '',
@@ -73,24 +75,17 @@ const Signup = () => {
 
   const userTypes = [
     {
-      value: 'buyer',
-      label: 'Property Buyer',
+      value: 'user',
+      label: 'Buyer / Seller',
       icon: <Person />,
-      description: 'Looking to buy or invest in properties'
-    },
-    {
-      value: 'seller',
-      label: 'Property Seller',
-      icon: <Home />,
-      description: 'Want to sell or list your properties'
+      description: 'Looking to buy or sell properties using your personal email'
     },
     {
       value: 'agent',
       label: 'Certified Agent',
       icon: <BusinessCenter />,
-      description: 'AGIS-certified property agent'
+      description: 'AGIS-certified property agent (requires official DigiAGIS email)'
     },
-    // Removed 'surveyor' and 'developer' account types per request
   ];
 
   const specializations = [
@@ -134,6 +129,11 @@ const Signup = () => {
         setError('Passwords do not match');
         return;
       }
+      // Validate agent emails
+      if (formData.userType === 'agent' && !formData.email.includes('@digiagis')) {
+        setError('Agents must use official DigiAGIS email addresses provided by the platform administrator.');
+        return;
+      }
     }
     
     setActiveStep((prev) => prev + 1);
@@ -151,7 +151,11 @@ const Signup = () => {
     const result = await signup(formData);
     
     if (result.success) {
-      navigate(result.user.userType === 'agent' ? '/agent-dashboard' : '/onboarding');
+      if (result.user.userType === 'agent') {
+        navigate('/agent-dashboard');
+      } else {
+        navigate('/marketplace');
+      }
     } else {
       setError(result.error || 'Signup failed. Please try again.');
     }
@@ -291,7 +295,7 @@ const Signup = () => {
                 Almost Done!
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Your {formData.userType} account is ready to be created. 
+                Your {formData.userType === 'user' ? 'buyer/seller' : formData.userType} account is ready to be created. 
                 Click next to review your information.
               </Typography>
             </Box>

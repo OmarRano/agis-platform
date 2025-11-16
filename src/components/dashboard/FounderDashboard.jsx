@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Card,
@@ -30,6 +30,10 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
+import { Button, Chip, TextField } from '@mui/material';
+import { AccountBalance, Mail } from '@mui/icons-material';
+import { generateToken } from '../../utils/token';
+import { enqueueNotification } from '../../utils/notifications';
 
 const FounderDashboard = () => {
   // Mock data for demonstration
@@ -68,6 +72,277 @@ const FounderDashboard = () => {
     { icon: <TrendingUp />, title: 'Success Rate', value: '94%', change: '+5%' },
   ];
 
+  const [feeApprovals, setFeeApprovals] = useState([
+    {
+      id: 1,
+      agent: 'Chinedu Okoro',
+      agentId: 'AGENT-001',
+      client: 'John Adebayo',
+      verificationId: 'VER-2024-001',
+      amount: 17000,
+      platformFee: 2000,
+      status: 'pending',
+      date: new Date().toLocaleString(),
+      token: generateToken('TK'),
+    }
+  ]);
+
+  const [agents, setAgents] = useState([
+    {
+      id: 1,
+      name: 'Chinedu Okoro',
+      personalEmail: 'chinedu@gmail.com',
+      officialEmail: 'chinedu.okoro@digiagis.com',
+      agisId: 'ABJ-AGIS-2847',
+      status: 'active',
+      joinDate: '2024-01-15',
+      tempPassword: 'digiagis2024',
+    }
+  ]);
+
+  const [newAgent, setNewAgent] = useState({
+    name: '',
+    personalEmail: '',
+    agisId: ''
+  });
+
+  const handleApproveFee = (id) => {
+    setFeeApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'approved' } : a));
+
+    const approval = feeApprovals.find(a => a.id === id);
+    if (approval) {
+      enqueueNotification(approval.agent, 'fee_approved', {
+        verificationId: approval.verificationId,
+        token: approval.token,
+        amount: approval.amount,
+        platformFee: approval.platformFee,
+        date: new Date().toISOString(),
+      });
+    }
+  };
+
+  const handleRejectFee = (id) => {
+    setFeeApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a));
+
+    const approval = feeApprovals.find(a => a.id === id);
+    if (approval) {
+      enqueueNotification(approval.agent, 'fee_rejected', {
+        verificationId: approval.verificationId,
+        token: approval.token,
+        amount: approval.amount,
+        platformFee: approval.platformFee,
+        date: new Date().toISOString(),
+      });
+    }
+  };
+
+  const handleCreateAgent = () => {
+    if (!newAgent.name || !newAgent.personalEmail || !newAgent.agisId) {
+      return;
+    }
+
+    // Generate official email
+    const officialEmail = `${newAgent.name.toLowerCase().replace(/\s+/g, '.')}@digiagis.com`;
+    
+    const agent = {
+      id: agents.length + 1,
+      ...newAgent,
+      officialEmail,
+      status: 'pending',
+      joinDate: new Date().toISOString().split('T')[0],
+      tempPassword: 'digiagis2024'
+    };
+
+    setAgents(prev => [...prev, agent]);
+    
+    // Enqueue notification
+    enqueueNotification(newAgent.name, 'agent_account_created', {
+      officialEmail,
+      personalEmail: newAgent.personalEmail,
+      agisId: newAgent.agisId,
+      tempPassword: agent.tempPassword,
+      date: new Date().toISOString(),
+    });
+
+    setNewAgent({ name: '', personalEmail: '', agisId: '' });
+  };
+
+  const AgentManagementSection = () => (
+    <Paper sx={{ p: 3, mb: 3 }}>
+      <Typography variant="h6" gutterBottom>
+        Agent Management
+      </Typography>
+
+      {/* Create New Agent */}
+      <Box sx={{ mb: 3, p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+        <Typography variant="subtitle1" gutterBottom>
+          Create Official Agent Account
+        </Typography>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} md={3}>
+            <TextField
+              fullWidth
+              label="Agent Name"
+              value={newAgent.name}
+              onChange={(e) => setNewAgent(prev => ({ ...prev, name: e.target.value }))}
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <TextField
+              fullWidth
+              label="Personal Email"
+              type="email"
+              value={newAgent.personalEmail}
+              onChange={(e) => setNewAgent(prev => ({ ...prev, personalEmail: e.target.value }))}
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <TextField
+              fullWidth
+              label="AGIS ID"
+              value={newAgent.agisId}
+              onChange={(e) => setNewAgent(prev => ({ ...prev, agisId: e.target.value }))}
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Button 
+              variant="contained" 
+              onClick={handleCreateAgent}
+              disabled={!newAgent.name || !newAgent.personalEmail || !newAgent.agisId}
+            >
+              Create Agent
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+
+      {/* Agents List */}
+      <Typography variant="subtitle1" gutterBottom>
+        Registered Agents
+      </Typography>
+      <Grid container spacing={2}>
+        {agents.map((agent) => (
+          <Grid item xs={12} key={agent.id}>
+            <Card variant="outlined">
+              <CardContent>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} md={3}>
+                    <Typography variant="subtitle2">
+                      {agent.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      AGIS: {agent.agisId}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <Typography variant="body2">
+                      Official Email:
+                    </Typography>
+                    <Typography variant="body2" fontWeight="bold">
+                      {agent.officialEmail}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={2}>
+                    <Chip 
+                      label={agent.status} 
+                      color={agent.status === 'active' ? 'success' : 'warning'}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={2}>
+                    <Typography variant="body2">
+                      Temp Pass: <code>{agent.tempPassword}</code>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={2}>
+                    <Button 
+                      variant="outlined" 
+                      size="small"
+                      startIcon={<Mail />}
+                    >
+                      Send Creds
+                    </Button>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Paper>
+  );
+
+  const FeeApprovalsSection = () => (
+    <Paper sx={{ p: 3, mb: 3 }}>
+      <Typography variant="h6" gutterBottom>
+        Platform Fee Approvals
+      </Typography>
+
+      <Grid container spacing={2}>
+        {feeApprovals.map((approval) => (
+          <Grid item xs={12} key={approval.id}>
+            <Card variant="outlined">
+              <CardContent>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} md={3}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Agent: {approval.agent}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      ID: {approval.agentId}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12} md={2}>
+                    <Typography variant="body2">
+                      Amount: <strong>₦{approval.amount.toLocaleString()}</strong>
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12} md={2}>
+                    <Typography variant="body2">
+                      Fee: <strong>₦{approval.platformFee.toLocaleString()}</strong>
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12} md={3}>
+                    <Typography variant="body2">
+                      Token: <code>{approval.token}</code>
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12} md={2}>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button 
+                        variant="contained" 
+                        size="small" 
+                        color="success"
+                        onClick={() => handleApproveFee(approval.id)}
+                      >
+                        Approve
+                      </Button>
+                      <Button 
+                        variant="outlined" 
+                        size="small" 
+                        color="error"
+                        onClick={() => handleRejectFee(approval.id)}
+                      >
+                        Reject
+                      </Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Paper>
+  );
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom fontWeight="bold">
@@ -100,6 +375,12 @@ const FounderDashboard = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Agent Management Section */}
+      <AgentManagementSection />
+
+      {/* Fee Approvals Section */}
+      <FeeApprovalsSection />
 
       {/* Charts */}
       <Grid container spacing={3}>

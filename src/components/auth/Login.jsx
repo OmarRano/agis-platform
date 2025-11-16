@@ -16,9 +16,6 @@ import {
   Visibility,
   VisibilityOff,
   Person,
-  BusinessCenter,
-  Engineering,
-  Home,
 } from '@mui/icons-material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -60,41 +57,35 @@ const Login = () => {
     const result = await login(formData.email, formData.password);
     
     if (result.success) {
-      navigate(result.user.userType === 'agent' ? '/agent-dashboard' : '/marketplace');
+      // Route based on user type
+      if (result.user.userType === 'admin') {
+        navigate('/founder-dashboard');
+      } else if (result.user.userType === 'agent') {
+        navigate('/agent-dashboard');
+      } else {
+        navigate('/marketplace');
+      }
     } else {
       setError(result.error || 'Invalid email or password');
     }
     setLoading(false);
   };
 
+  // Only demo accounts for Buyer/Seller
   const demoAccounts = [
     {
       type: 'user',
       icon: <Person />,
-      email: 'user@demo.com',
+      email: 'buyer@demo.com',
       password: 'demo123',
-      label: 'Regular User'
+      label: 'Buyer Demo'
     },
     {
-      type: 'agent',
-      icon: <BusinessCenter />,
-      email: 'agent@demo.com',
+      type: 'user',
+      icon: <Person />,
+      email: 'seller@demo.com',
       password: 'demo123',
-      label: 'Verified Agent'
-    },
-    {
-      type: 'surveyor',
-      icon: <Engineering />,
-      email: 'surveyor@demo.com',
-      password: 'demo123',
-      label: 'Surveyor'
-    },
-    {
-      type: 'developer',
-      icon: <Home />,
-      email: 'developer@demo.com',
-      password: 'demo123',
-      label: 'Estate Developer'
+      label: 'Seller Demo'
     },
   ];
 
@@ -194,14 +185,14 @@ const Login = () => {
 
         <Divider sx={{ my: 3 }}>
           <Typography variant="body2" color="text.secondary">
-            Or try a demo account
+            Demo Access
           </Typography>
         </Divider>
 
-        {/* Demo Accounts */}
+        {/* Demo Accounts - Only Buyer/Seller */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Quick demo access:
+            Quick demo access for buyers/sellers:
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {demoAccounts.map((account, index) => (
@@ -218,6 +209,13 @@ const Login = () => {
             ))}
           </Box>
         </Box>
+
+        {/* Official Account Instructions */}
+        <Alert severity="info" sx={{ mb: 2 }}>
+          <Typography variant="body2">
+            <strong>Agents & Admins:</strong> Use your official DigiAGIS email address provided by the platform administrator.
+          </Typography>
+        </Alert>
 
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="body2" color="text.secondary">

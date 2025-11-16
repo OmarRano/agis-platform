@@ -34,6 +34,7 @@ import {
   LocationOn,
   CheckCircle,
   PendingActions,
+  AccountBalance,
 } from '@mui/icons-material';
 import {
   LineChart,
@@ -47,6 +48,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { generateToken } from '../../utils/token';
+import { enqueueNotification } from '../../utils/notifications';
 
 // Tab panel component
 function TabPanel({ children, value, index, ...other }) {
@@ -149,6 +152,124 @@ const AgentDashboard = () => {
       priority: 'high'
     },
   ];
+
+  const [paymentNotifications, setPaymentNotifications] = useState([
+    {
+      id: 1,
+      type: 'payment_received',
+      client: 'John Adebayo',
+      property: 'Plot in Maitama',
+      amount: 17000,
+      platformFee: 2000,
+      status: 'pending_fee_payment',
+      date: new Date().toLocaleString(),
+      verificationId: 'VER-2024-001',
+      token: generateToken('TK'),
+    }
+  ]);
+
+  const handlePayPlatformFee = (id) => {
+    setPaymentNotifications(prev => prev.map(n => n.id === id ? { ...n, status: 'fee_paid' } : n));
+
+    const notif = paymentNotifications.find(n => n.id === id);
+    if (notif) {
+      enqueueNotification('founder', 'platform_fee_paid', {
+        verificationId: notif.verificationId,
+        token: notif.token,
+        amount: notif.amount,
+        platformFee: notif.platformFee,
+        date: new Date().toISOString(),
+      });
+    }
+  };
+
+  const handleStartVerification = (id) => {
+    setPaymentNotifications(prev => prev.map(n => n.id === id ? { ...n, status: 'in_verification' } : n));
+
+    const notif = paymentNotifications.find(n => n.id === id);
+    if (notif) {
+      enqueueNotification(notif.client, 'verification_started', {
+        verificationId: notif.verificationId,
+        token: notif.token,
+        date: new Date().toISOString(),
+      });
+    }
+  };
+
+  const handleContactClient = (client) => {
+    // Placeholder: wire to messaging or call flow
+    // For now just log to console
+    console.log('Contact client:', client);
+    alert(`Contacting ${client} (placeholder)`);
+  };
+
+  const PaymentNotifications = () => (
+    <Paper sx={{ p: 2, mb: 3 }}>
+      <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+        <AccountBalance sx={{ mr: 1 }} />
+        Payment Notifications
+      </Typography>
+
+      {paymentNotifications.map((notification) => (
+        <Card key={notification.id} sx={{ mb: 2, border: 1, borderColor: 'divider' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+              <Box>
+                <Typography variant="h6" color="primary">
+                  ₦{notification.amount.toLocaleString()} Received
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  From: {notification.client} • {notification.property}
+                </Typography>
+              </Box>
+              <Chip 
+                label={notification.status.replace(/_/g, ' ')} 
+                color={notification.status === 'pending_fee_payment' ? 'warning' : 'success'}
+                size="small"
+              />
+            </Box>
+
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={6}>
+                <Typography variant="body2">
+                  Verification ID: <strong>{notification.verificationId}</strong>
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body2">
+                  Platform Fee: <strong>₦{notification.platformFee.toLocaleString()}</strong>
+                </Typography>
+              </Grid>
+            </Grid>
+
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <Button 
+                variant="contained" 
+                size="small"
+                onClick={() => handlePayPlatformFee(notification.id)}
+              >
+                Pay Platform Fee
+              </Button>
+              <Button 
+                variant="outlined" 
+                size="small"
+                onClick={() => handleStartVerification(notification.id)}
+              >
+                Start Verification
+              </Button>
+              <Button 
+                variant="text" 
+                size="small"
+                onClick={() => handleContactClient(notification.client)}
+              >
+                Contact Client
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      ))}
+    </Paper>
+  );
 
   const availableJobs = [
     {
@@ -457,6 +578,9 @@ const AgentDashboard = () => {
               <Button variant="contained" fullWidth startIcon={<Add />}>
                 Create New Service
               </Button>
+
+              {/* Payment notifications */}
+              <PaymentNotifications />
             </Grid>
           </Grid>
         </TabPanel>

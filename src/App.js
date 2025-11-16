@@ -31,7 +31,21 @@ function ProtectedRoute({ children, requiredUserType }) {
 
   if (loading) return <div>Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (requiredUserType && user.userType !== requiredUserType) return <Navigate to="/unauthorized" replace />;
+  
+  // If admin tries to access user pages, redirect to founder dashboard
+  if (user.userType === 'admin' && requiredUserType !== 'admin') {
+    return <Navigate to="/founder-dashboard" replace />;
+  }
+  
+  // If agent tries to access admin pages, redirect to agent dashboard
+  if (user.userType === 'agent' && requiredUserType === 'admin') {
+    return <Navigate to="/agent-dashboard" replace />;
+  }
+  
+  // Check if user has required permission
+  if (requiredUserType && user.userType !== requiredUserType) {
+    return <Navigate to="/" replace />;
+  }
 
   return children;
 }

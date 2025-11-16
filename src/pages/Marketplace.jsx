@@ -43,6 +43,7 @@ import {
   Phone,
   Message,
 } from '@mui/icons-material';
+import PaymentModal from '../components/verification/PaymentModal';
 
 // Tab panel component
 function TabPanel({ children, value, index, ...other }) {
@@ -63,6 +64,8 @@ const Marketplace = () => {
   const [tabValue, setTabValue] = useState(0);
   const [viewMode, setViewMode] = useState('grid');
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [paymentModalProperty, setPaymentModalProperty] = useState(null);
   const [filters, setFilters] = useState({
     propertyType: '',
     location: '',
@@ -511,7 +514,16 @@ const Marketplace = () => {
                   </Box>
                 </Paper>
 
-                <Button variant="contained" fullWidth size="large" sx={{ mb: 1 }}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  sx={{ mb: 1 }}
+                  onClick={() => {
+                    setPaymentModalProperty(property);
+                    setPaymentModalOpen(true);
+                  }}
+                >
                   Request Verification
                 </Button>
                 <Button variant="outlined" fullWidth startIcon={<Share />}>
@@ -668,6 +680,13 @@ const Marketplace = () => {
       </Box>
 
       {/* Property Detail Modal */}
+      <PaymentModal
+        open={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        property={paymentModalProperty}
+        agent={paymentModalProperty?.agent}
+      />
+
       <PropertyDetailModal 
         property={selectedProperty}
         open={!!selectedProperty}

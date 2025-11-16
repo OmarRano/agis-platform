@@ -44,8 +44,8 @@ const Header = () => {
   const handleDashboard = () => {
     if (user.userType === 'agent') {
       navigate('/agent-dashboard');
-    } else {
-      navigate('/marketplace');
+    } else if (user.userType === 'admin') {
+      navigate('/founder-dashboard');
     }
     handleClose();
   };
@@ -93,10 +93,12 @@ const Header = () => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleDashboard}>
-                <Dashboard sx={{ mr: 1 }} />
-                Dashboard
-              </MenuItem>
+              {(user.userType === 'admin' || user.userType === 'agent') && (
+                <MenuItem onClick={handleDashboard}>
+                  <Dashboard sx={{ mr: 1 }} />
+                  Dashboard
+                </MenuItem>
+              )}
               <MenuItem onClick={handleClose}>
                 <AccountCircle sx={{ mr: 1 }} />
                 Profile

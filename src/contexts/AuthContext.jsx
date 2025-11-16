@@ -29,21 +29,57 @@ export const AuthProvider = ({ children }) => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Mock user data - in real app, this would come from your backend
-      const mockUser = {
-        id: 1,
-        email: email,
-        name: 'John Doe',
-        userType: email.includes('agent') ? 'agent' : 'user',
-        avatar: '/api/placeholder/40/40',
-        isVerified: true,
-        trustScore: email.includes('agent') ? 94 : null,
-        joinDate: '2024-01-01'
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('digiagis_user', JSON.stringify(mockUser));
-      return { success: true, user: mockUser };
+      // Determine user type based on email domain
+      let userType = 'user'; // Default to buyer/seller
+      let userData = {};
+
+      // Admin detection
+      if (email === 'umar.admin@demo.com' || email.includes('@digiagis.admin') || email.includes('admin@digiagis')) {
+        userType = 'admin';
+        userData = {
+          id: 1,
+          email: email,
+          name: 'Platform Administrator',
+          userType: 'admin',
+          avatar: '/api/placeholder/40/40',
+          isVerified: true,
+          permissions: ['all'],
+          joinDate: '2024-01-01'
+        };
+      }
+      // Agent detection - official agent emails
+      else if (email.includes('@digiagis.agent') || email.includes('agent@digiagis') || (email.includes('@digiagis') && !email.includes('admin'))) {
+        userType = 'agent';
+        userData = {
+          id: 2,
+          email: email,
+          name: 'Certified Agent',
+          userType: 'agent',
+          avatar: '/api/placeholder/40/40',
+          isVerified: true,
+          trustScore: 95,
+          agisId: 'ABJ-AGIS-2024',
+          joinDate: '2024-01-01'
+        };
+      }
+      // Buyer/Seller - normal email addresses
+      else {
+        userType = 'user';
+        const namePrefix = email.split('@')[0];
+        userData = {
+          id: 3,
+          email: email,
+          name: namePrefix.includes('buyer') ? 'Demo Buyer' : namePrefix.includes('seller') ? 'Demo Seller' : 'Demo User',
+          userType: 'user',
+          avatar: '/api/placeholder/40/40',
+          isVerified: false,
+          joinDate: '2024-01-01'
+        };
+      }
+
+      setUser(userData);
+      localStorage.setItem('digiagis_user', JSON.stringify(userData));
+      return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error.message };
     } finally {
@@ -57,10 +93,20 @@ export const AuthProvider = ({ children }) => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
+      // For agents, check if email is official
+      if (userData.userType === 'agent') {
+        if (!userData.email.includes('@digiagis')) {
+          return { 
+            success: false, 
+            error: 'Agents must use official DigiAGIS email addresses provided by the platform administrator.' 
+          };
+        }
+      }
+
       const newUser = {
         id: Math.random(),
         ...userData,
-        isVerified: false,
+        isVerified: userData.userType === 'agent' ? false : true, // Agents need verification
         trustScore: userData.userType === 'agent' ? 0 : null,
         joinDate: new Date().toISOString().split('T')[0]
       };
