@@ -61,8 +61,8 @@ git push origin main
 1. In Netlify dashboard → **Site settings** → **Build & deploy** → **Environment**
 2. Add these variables:
    ```
-   REACT_APP_API_URL=https://api.digiagis.com
-   REACT_APP_STRIPE_PUBLIC_KEY=your_key_here
+   REACT_APP_API_URL=https://your-api-domain.com
+   REACT_APP_STRIPE_PUBLIC_KEY=pk_live_your_stripe_key
    REACT_APP_ENABLE_PAYMENTS=true
    ```
 3. Redeploy (Netlify will rebuild automatically)

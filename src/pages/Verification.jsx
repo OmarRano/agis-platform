@@ -20,33 +20,18 @@ import {
   Divider,
   Alert,
   LinearProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  IconButton,
 } from '@mui/material';
 import {
   Upload,
   Assignment,
   VerifiedUser,
   Schedule,
-  Payment,
   Description,
   LocationOn,
   Person,
   Star,
-  Phone,
   Message,
-  Close,
   CheckCircle,
-  Warning,
-  Error as ErrorIcon,
   CloudUpload,
   AttachMoney,
   ScheduleSend,
@@ -57,7 +42,6 @@ const Verification = () => {
   const [verificationType, setVerificationType] = useState('');
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [documents, setDocuments] = useState([]);
-  const [showAgentModal, setShowAgentModal] = useState(false);
 
   // Mock data
   const verificationTypes = [

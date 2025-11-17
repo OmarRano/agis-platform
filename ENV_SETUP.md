@@ -12,9 +12,9 @@
 
 ### 1. API Configuration
 ```
-REACT_APP_API_URL=https://api.digiagis.com
+REACT_APP_API_URL=https://your-api-domain.com
 ```
-- Your backend API endpoint
+- Your backend API endpoint (update to your actual domain)
 - Used for all API calls (login, signup, marketplace, etc.)
 
 ### 2. Payment Processing (Stripe)
@@ -24,6 +24,7 @@ REACT_APP_STRIPE_PUBLIC_KEY=pk_live_your_stripe_key_here
 - **Publishable Key** from Stripe (NOT secret key)
 - Get from: https://dashboard.stripe.com/apikeys
 - Used for payment modal integration
+- Update with your actual publishable key from Stripe
 
 ### 3. Feature Flags
 ```
@@ -54,8 +55,8 @@ Click **"Edit variables"** and add:
 
 | Key | Value |
 |-----|-------|
-| `REACT_APP_API_URL` | `https://api.digiagis.com` |
-| `REACT_APP_STRIPE_PUBLIC_KEY` | `pk_live_...` |
+| `REACT_APP_API_URL` | `https://your-api-domain.com` |
+| `REACT_APP_STRIPE_PUBLIC_KEY` | `pk_live_your_key` |
 | `REACT_APP_ENABLE_PAYMENTS` | `true` |
 | `REACT_APP_ENABLE_NOTIFICATIONS` | `true` |
 | `NODE_ENV` | `production` |

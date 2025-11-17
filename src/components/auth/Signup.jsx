@@ -4,7 +4,6 @@ import {
   Button,
   Box,
   Typography,
-  Divider,
   Alert,
   IconButton,
   InputAdornment,
@@ -23,8 +22,6 @@ import {
   VisibilityOff,
   Person,
   BusinessCenter,
-  Engineering,
-  Home,
   ArrowBack,
   ArrowForward,
 } from '@mui/icons-material';

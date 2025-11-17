@@ -16,12 +16,6 @@ import {
   Slider,
   InputAdornment,
   Pagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Tabs,
-  Tab,
   Avatar,
   Rating,
 } from '@mui/material';
@@ -29,18 +23,14 @@ import {
   Search,
   FilterList,
   LocationOn,
-  Favorite,
   FavoriteBorder,
   Share,
-  Visibility,
   VerifiedUser,
   Star,
   BusinessCenter,
   Map,
   List,
   GridView,
-  Close,
-  Phone,
   Message,
 } from '@mui/icons-material';
 import PaymentModal from '../components/verification/PaymentModal';
@@ -61,7 +51,6 @@ function TabPanel({ children, value, index, ...other }) {
 }
 
 const Marketplace = () => {
-  const [tabValue, setTabValue] = useState(0);
   const [viewMode, setViewMode] = useState('grid');
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
@@ -216,10 +205,6 @@ const Marketplace = () => {
       likes: 31,
     },
   ];
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
 
   const handleFilterChange = (filterName, value) => {
     setFilters(prev => ({

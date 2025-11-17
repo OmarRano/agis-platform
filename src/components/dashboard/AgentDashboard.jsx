@@ -14,7 +14,6 @@ import {
   ListItemIcon,
   Tab,
   Tabs,
-  Badge,
   LinearProgress,
   Avatar,
 } from '@mui/material';

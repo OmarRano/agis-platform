@@ -30,12 +30,10 @@ export const AuthProvider = ({ children }) => {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Determine user type based on email domain
-      let userType = 'user'; // Default to buyer/seller
       let userData = {};
 
       // Admin detection
       if (email === 'umar.admin@demo.com' || email.includes('@digiagis.admin') || email.includes('admin@digiagis')) {
-        userType = 'admin';
         userData = {
           id: 1,
           email: email,
@@ -49,7 +47,6 @@ export const AuthProvider = ({ children }) => {
       }
       // Agent detection - official agent emails
       else if (email.includes('@digiagis.agent') || email.includes('agent@digiagis') || (email.includes('@digiagis') && !email.includes('admin'))) {
-        userType = 'agent';
         userData = {
           id: 2,
           email: email,

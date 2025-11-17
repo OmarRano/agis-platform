@@ -7,8 +7,6 @@ import {
   Card,
   CardContent,
   Box,
-  AppBar,
-  Toolbar,
 } from '@mui/material';
 import {
   VerifiedUser,

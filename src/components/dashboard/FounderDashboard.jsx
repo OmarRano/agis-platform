@@ -31,7 +31,7 @@ import {
   Cell,
 } from 'recharts';
 import { Button, Chip, TextField } from '@mui/material';
-import { AccountBalance, Mail } from '@mui/icons-material';
+import { Mail } from '@mui/icons-material';
 import { generateToken } from '../../utils/token';
 import { enqueueNotification } from '../../utils/notifications';
 
