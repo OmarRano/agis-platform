@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -6,18 +6,20 @@ import CssBaseline from '@mui/material/CssBaseline';
 // Context
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-// Components
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
+// Skeleton fallback for Suspense
+import LoadingSkeleton from './components/common/LoadingSkeleton';
 
-// Pages
-import Home from './pages/Home';
-import Marketplace from './pages/Marketplace';
-import Verification from './pages/Verification';
-import FounderDashboard from './components/dashboard/FounderDashboard';
-import AgentDashboard from './components/dashboard/AgentDashboard';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
+// Lazy-loaded Components / Pages (named chunks for clearer splitting)
+const Header = lazy(() => import(/* webpackChunkName: "Header" */ './components/common/Header'));
+const Footer = lazy(() => import(/* webpackChunkName: "Footer" */ './components/common/Footer'));
+const Home = lazy(() => import(/* webpackChunkName: "Home" */ './pages/Home'));
+const Marketplace = lazy(() => import(/* webpackChunkName: "Marketplace" */ './pages/Marketplace'));
+const Verification = lazy(() => import(/* webpackChunkName: "Verification" */ './pages/Verification'));
+const FounderDashboard = lazy(() => import(/* webpackChunkName: "FounderDashboard" */ './components/dashboard/FounderDashboard'));
+const AgentDashboard = lazy(() => import(/* webpackChunkName: "AgentDashboard" */ './components/dashboard/AgentDashboard'));
+const Login = lazy(() => import(/* webpackChunkName: "Login" */ './components/auth/Login'));
+const Signup = lazy(() => import(/* webpackChunkName: "Signup" */ './components/auth/Signup'));
+
 
 const theme = createTheme({
   palette: {
@@ -58,25 +60,74 @@ function AppContent() {
       <CssBaseline />
       <Router>
         <div className="App">
-          {/* Header/Footer are rendered only when auth is available */}
-          {user && <Header />}
-          <main>
-            <Routes>
+            {/* Header/Footer are rendered only when auth is available */}
+            {user && (
+              <Suspense fallback={<LoadingSkeleton type="header" />}>
+                <Header />
+              </Suspense>
+            )}
+            <main>
+              <Routes>
               {/* Public */}
-              <Route path="/login" element={user ? <Navigate to="/marketplace" /> : <Login />} />
-              <Route path="/signup" element={user ? <Navigate to="/marketplace" /> : <Signup />} />
+              <Route
+                path="/login"
+                element={
+                  user ? (
+                    <Navigate to="/marketplace" />
+                  ) : (
+                    <Suspense fallback={<LoadingSkeleton type="page" />}>
+                      <Login />
+                    </Suspense>
+                  )
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  user ? (
+                    <Navigate to="/marketplace" />
+                  ) : (
+                    <Suspense fallback={<LoadingSkeleton type="page" />}>
+                      <Signup />
+                    </Suspense>
+                  )
+                }
+              />
 
               {/* Public pages */}
-              <Route path="/" element={<Home />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/verification" element={<Verification />} />
+              <Route
+                path="/"
+                element={
+                  <Suspense fallback={<LoadingSkeleton type="page" />}>
+                    <Home />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/marketplace"
+                element={
+                  <Suspense fallback={<LoadingSkeleton type="page" />}>
+                    <Marketplace />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/verification"
+                element={
+                  <Suspense fallback={<LoadingSkeleton type="page" />}>
+                    <Verification />
+                  </Suspense>
+                }
+              />
 
               {/* Protected */}
               <Route
                 path="/founder-dashboard"
                 element={
                   <ProtectedRoute requiredUserType="admin">
-                    <FounderDashboard />
+                    <Suspense fallback={<LoadingSkeleton type="page" />}>
+                      <FounderDashboard />
+                    </Suspense>
                   </ProtectedRoute>
                 }
               />
@@ -84,7 +135,9 @@ function AppContent() {
                 path="/agent-dashboard"
                 element={
                   <ProtectedRoute requiredUserType="agent">
-                    <AgentDashboard />
+                    <Suspense fallback={<LoadingSkeleton type="page" />}>
+                      <AgentDashboard />
+                    </Suspense>
                   </ProtectedRoute>
                 }
               />
@@ -93,7 +146,11 @@ function AppContent() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
-          {user && <Footer />}
+            {user && (
+              <Suspense fallback={<LoadingSkeleton type="footer" />}>
+                <Footer />
+              </Suspense>
+            )}
         </div>
       </Router>
     </ThemeProvider>
