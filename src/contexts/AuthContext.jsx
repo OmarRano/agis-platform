@@ -45,8 +45,21 @@ export const AuthProvider = ({ children }) => {
           joinDate: '2024-01-01'
         };
       }
+      // Deal Initiator detection - official deal initiator emails
+      else if (email.includes('@digiagis.dealinitiator') || email.includes('dealinitiator@digiagis')) {
+        userData = {
+          id: 4,
+          email: email,
+          name: 'Certified Deal Initiator',
+          userType: 'deal-initiator',
+          avatar: '/api/placeholder/40/40',
+          isVerified: true,
+          tier: 'GOLD',
+          joinDate: '2024-01-01'
+        };
+      }
       // Agent detection - official agent emails
-      else if (email.includes('@digiagis.agent') || email.includes('agent@digiagis') || (email.includes('@digiagis') && !email.includes('admin'))) {
+      else if (email.includes('@digiagis.agent') || email.includes('agent@digiagis') || (email.includes('@digiagis') && !email.includes('admin') && !email.includes('dealinitiator'))) {
         userData = {
           id: 2,
           email: email,
@@ -98,12 +111,22 @@ export const AuthProvider = ({ children }) => {
           };
         }
       }
+      // For deal-initiators, check if email is official
+      if (userData.userType === 'deal-initiator') {
+        if (!userData.email.includes('@digiagis.dealinitiator')) {
+          return {
+            success: false,
+            error: 'Deal Initiators must use official DigiAGIS deal initiator email addresses provided by the platform administrator.'
+          };
+        }
+      }
 
       const newUser = {
         id: Math.random(),
         ...userData,
         isVerified: userData.userType === 'agent' ? false : true, // Agents need verification
         trustScore: userData.userType === 'agent' ? 0 : null,
+        tier: userData.userType === 'deal-initiator' ? 'GOLD' : null,
         joinDate: new Date().toISOString().split('T')[0]
       };
       

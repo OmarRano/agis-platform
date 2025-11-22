@@ -112,7 +112,6 @@ const AgentDashboard = () => {
       color: '#2196F3'
     },
   ];
-
   const recentJobs = [
     {
       id: 1,

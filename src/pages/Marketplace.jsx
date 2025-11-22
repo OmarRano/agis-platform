@@ -42,19 +42,7 @@ import {
 import PaymentModal from '../components/verification/PaymentModal';
 
 // Tab panel component
-function TabPanel({ children, value, index, ...other }) {
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`marketplace-tabpanel-${index}`}
-      aria-labelledby={`marketplace-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
-    </div>
-  );
-}
+// Tab panel component is removed as it is unused.
 
 const Marketplace = () => {
   const [viewMode, setViewMode] = useState('grid');

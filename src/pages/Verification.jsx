@@ -22,14 +22,10 @@ import {
   LinearProgress,
 } from '@mui/material';
 import {
-  Upload,
   Assignment,
   VerifiedUser,
-  Schedule,
   Description,
-  LocationOn,
   Person,
-  Star,
   Message,
   CheckCircle,
   CloudUpload,
@@ -40,9 +36,8 @@ import {
 const Verification = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [verificationType, setVerificationType] = useState('');
-  const [selectedAgent, setSelectedAgent] = useState(null);
   const [documents, setDocuments] = useState([]);
-  const [showAgentModal, setShowAgentModal] = useState(false);
+  // Removed unused agent selection state
 
   // Mock data
   const verificationTypes = [
@@ -88,44 +83,17 @@ const Verification = () => {
     },
   ];
 
-  const availableAgents = [
-    {
-      id: 1,
-      name: 'Chinedu Okoro',
-      rating: 4.9,
-      trustScore: 94,
-      completedJobs: 128,
-      responseTime: '1.2h',
-      specialization: ['C-of-O', 'Survey Plans'],
-      price: 15000,
-      profileImage: '/api/placeholder/60/60',
-      isOnline: true,
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      rating: 4.8,
-      trustScore: 92,
-      completedJobs: 95,
-      responseTime: '2.1h',
-      specialization: ['AGIS Search', 'Encumbrance'],
-      price: 12000,
-      profileImage: '/api/placeholder/60/60',
-      isOnline: true,
-    },
-    {
-      id: 3,
-      name: 'Mike Adebayo',
-      rating: 4.7,
-      trustScore: 88,
-      completedJobs: 76,
-      responseTime: '3.5h',
-      specialization: ['Title Verification', 'Legal'],
-      price: 18000,
-      profileImage: '/api/placeholder/60/60',
-      isOnline: false,
-    },
-  ];
+  // Mock Deal Initiator data
+  const dealInitiator = {
+    name: 'Alex DealMaster',
+    platformPhone: '+234800-AGIS-PLT',
+    whatsAppLink: 'https://wa.me/2348002447758',
+    tier: 'GOLD',
+    responseTime: '2.1h',
+    deals: 24,
+    verified: true,
+    profileImage: '/api/placeholder/60/60',
+  };
 
   const verificationSteps = [
     {
@@ -137,8 +105,8 @@ const Verification = () => {
       description: 'Provide the required documents for verification',
     },
     {
-      label: 'Choose Agent',
-      description: 'Select a verified agent to handle your request',
+      label: 'Contact Deal Initiator',
+      description: 'Contact our certified Deal Initiator for secure verification',
     },
     {
       label: 'Review & Pay',
@@ -163,11 +131,7 @@ const Verification = () => {
     handleNext();
   };
 
-  const handleAgentSelect = (agent) => {
-    setSelectedAgent(agent);
-    setShowAgentModal(false);
-    handleNext();
-  };
+  // Remove agent selection logic
 
   const handleDocumentUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -187,11 +151,11 @@ const Verification = () => {
       case 1:
         return <DocumentUploadStep documents={documents} onUpload={handleDocumentUpload} onNext={handleNext} />;
       case 2:
-        return <AgentSelectionStep agents={availableAgents} onSelect={handleAgentSelect} selectedAgent={selectedAgent} />;
+        return <DealInitiatorContactStep />;
       case 3:
-        return <ReviewStep verificationType={verificationTypes.find(t => t.id === verificationType)} agent={selectedAgent} documents={documents} onConfirm={handleNext} />;
+        return <ReviewStep verificationType={verificationTypes.find(t => t.id === verificationType)} dealInitiator={dealInitiator} documents={documents} onConfirm={handleNext} />;
       case 4:
-        return <ProgressStep verificationType={verificationTypes.find(t => t.id === verificationType)} agent={selectedAgent} />;
+        return <ProgressStep verificationType={verificationTypes.find(t => t.id === verificationType)} dealInitiator={dealInitiator} />;
       default:
         return 'Unknown step';
     }
@@ -257,7 +221,829 @@ const Verification = () => {
                       <ListItemText primary={req} />
                     </ListItem>
                   ))}
-                </List>
+                </List># DigiAGIS Platform: Software Architecture Document
+
+## 1. Executive Summary
+
+### 1.1 Vision Statement
+To create a trusted digital marketplace that bridges the gap between property seekers and AGIS-certified agents through a network of Deal Initiators (DIs), ensuring secure, documented property transactions while preventing commission bypass.
+
+### 1.2 Core Problem Statement
+The current property market suffers from:
+- Difficulty identifying legitimate property owners among multiple agents
+- Lack of transparency in property documentation
+- Risk of agents bypassing platforms to avoid commission payments
+- Inefficient deal initiation and verification processes
+
+### 1.3 Solution Overview
+A platform that introduces Deal Initiators as intermediaries who facilitate connections while protecting platform revenue through controlled information flow and secure communication channels.
+
+## 2. System Architecture
+
+### 2.1 High-Level Architecture
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Buyer/Seller  │    │ Deal Initiator   │    │  AGIS Agent     │
+│                 │    │  (Platform DI)   │    │                 │
+└─────────┬───────┘    └─────────┬────────┘    └─────────┬───────┘
+          │                      │                       │
+          └──────────────────────┼───────────────────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  │   DigiAGIS Platform         │
+                  │   (Orchestration Layer)     │
+                  └──────────────┬──────────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  │   AGIS Integration &        │
+                  │   Document Verification     │
+                  └─────────────────────────────┘
+```
+
+### 2.2 Core Components
+
+#### 2.2.1 User Management Module
+- **Buyer/Seller Registration**: Normal email registration with property preferences
+- **Agent Onboarding**: Official @digiagis emails with AGIS certification verification
+- **Deal Initiator Program**: Platform-employed DIs with specialized training
+- **Admin/Funder Access**: Platform oversight and agent management
+
+#### 2.2.2 Property Marketplace Module
+- **Property Listings**: Agent-uploaded properties with AGIS documentation
+- **Verification System**: Document authenticity verification workflow
+- **Search & Discovery**: Location-based property matching
+- **Trust Scoring**: Agent and property reliability metrics
+
+#### 2.2.3 Deal Initiation Engine
+- **Smart Matching**: AI-powered connection between buyers and DIs
+- **Information Control**: Controlled disclosure of contact details
+- **Commission Protection**: Prevention of direct agent-buyer communication
+- **Deal Tracking**: End-to-end transaction monitoring
+
+#### 2.2.4 Communication System
+- **Secure Messaging**: Encrypted in-platform communication
+- **Controlled Contact**: Progressive information disclosure
+- **Deal Rooms**: Secure spaces for transaction discussions
+- **Notification System**: Real-time updates for all parties
+
+## 3. Workflow Architecture
+
+### 3.1 Property Discovery & Verification Workflow
+
+```
+Phase 1: Property Listing & Verification
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Agent     │ →  │ Document    │ →  │ Platform    │
+│  Lists      │    │ Upload &    │    │ Verification│
+│ Property    │    │ AGIS Check  │    │ & Approval  │
+└─────────────┘    └─────────────┘    └─────────────┘
+
+Phase 2: Buyer Discovery & DI Assignment
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Buyer     │ →  │ Property    │ →  │ Deal        │
+│  Searches   │    │ Match & DI  │    │ Initiator   │
+│  Property   │    │ Assignment  │    │ Assigned    │
+└─────────────┘    └─────────────┘    └─────────────┘
+
+Phase 3: Controlled Introduction & Deal Making
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   DI        │ →  │ Agent       │ →  │ Secure Deal │
+│ Contacts    │    │ Contact &   │    │ Room with   │
+│ Agent       │    │ Discussion  │    │ All Parties │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### 3.2 Commission Protection Workflow
+
+#### 3.2.1 Information Control Protocol
+1. **Initial Contact**: Buyer contacts DI through platform
+2. **Property Matching**: DI identifies suitable agents/properties
+3. **Agent Outreach**: DI contacts agent without revealing buyer details
+4. **Deal Room Creation**: Platform creates secure communication channel
+5. **Progressive Disclosure**: Buyer details revealed only after commitment
+
+#### 3.2.2 Commission Assurance Mechanisms
+- **Platform-Mediated Payments**: All financial transactions through platform
+- **Escrow Services**: Funds held until deal completion
+- **Performance Tracking**: DI and agent performance monitoring
+- **Contract Enforcement**: Legal agreements preventing commission avoidance
+
+## 4. Data Architecture
+
+### 4.1 Information Segmentation
+
+#### 4.1.1 Public Information (Visible to All)
+- Property details (location, size, price range)
+- Agent trust scores and verification status
+- Property verification status
+- DI availability and ratings
+
+#### 4.1.2 Restricted Information (Platform & DI Only)
+- Buyer contact information
+- Buyer budget and preferences
+- Communication history
+- Deal negotiation details
+
+#### 4.1.3 Progressive Disclosure Timeline
+```
+Day 1-3: DI works with buyer to understand needs
+Day 4-7: DI contacts agents without revealing buyer identity
+Day 8+: Secure deal room with all parties, full disclosure
+```
+
+### 4.2 Security Architecture
+
+#### 4.2.1 Data Protection Layers
+- **Encryption**: End-to-end encryption for all communications
+- **Access Control**: Role-based access to sensitive information
+- **Audit Logging**: Complete transaction history tracking
+- **Compliance**: GDPR, local data protection regulations
+
+## 5. Business Logic Architecture
+
+### 5.1 Commission Model
+
+#### 5.1.1 Revenue Streams
+1. **Platform Commission**: 2-5% of transaction value
+2. **Verification Fees**: Fixed fee for document verification
+3. **Subscription Fees**: Agent premium account subscriptions
+4. **DI Commission Sharing**: Platform-DI revenue sharing
+
+#### 5.1.2 Commission Distribution
+```
+Total Commission: 5%
+- Platform: 2%
+- Deal Initiator: 3%
+- Agent: Receives full agreed price from buyer
+```
+
+### 5.2 Trust and Verification System
+
+#### 5.2.1 Multi-Layer Verification
+1. **Agent Verification**: AGIS certification and background checks
+2. **Document Verification**: AGIS record cross-referencing
+3. **Property Verification**: Physical verification where possible
+4. **Transaction Verification**: Legal document authentication
+
+## 6. Technology Stack Architecture
+
+### 6.1 Frontend Architecture
+- **Framework**: React.js with Material-UI
+- **State Management**: Redux/Context API
+- **Real-time Communication**: WebSocket for live updates
+- **Mobile Responsive**: Progressive Web App capabilities
+
+### 6.2 Backend Architecture
+- **API Framework**: Node.js with Express.js
+- **Database**: PostgreSQL for relational data, Redis for caching
+- **File Storage**: AWS S3 for document storage
+- **Search Engine**: Elasticsearch for property search
+
+### 6.3 Integration Architecture
+- **AGIS API Integration**: Secure government system connectivity
+- **Payment Gateway**: Flutterwave/Paystack integration
+- **SMS/Email Services**: Twilio, SendGrid for notifications
+- **Mapping Services**: Google Maps/Mapbox integration
+
+## 7. Operational Architecture
+
+### 7.1 Deal Initiator Program
+
+#### 7.1.1 DI Recruitment & Training
+- **Background Checks**: Comprehensive screening process
+- **AGIS Training**: Understanding of property documentation
+- **Platform Training**: System usage and ethical guidelines
+- **Performance Monitoring**: Continuous quality assessment
+
+#### 7.1.2 DI Workflow Management
+- **Case Assignment**: Automated DI-property matching
+- **Performance Metrics**: Success rate, response time, customer satisfaction
+- **Commission Structure**: Performance-based incentive model
+- Quality Assurance: Regular audit and feedback
+
+### 7.2 Agent Management
+
+#### 7.2.1 Onboarding Process
+- **AGIS Verification**: Certification authenticity check
+- **Document Upload**: Required property documentation
+- **Platform Training**: System usage and commission structure
+- **Contract Signing**: Legal agreement preventing bypass
+
+#### 7.2.2 Performance Monitoring
+- **Response Time**: Time to respond to DI inquiries
+- **Deal Success Rate**: Percentage of initiated deals closed
+- **Customer Satisfaction**: Buyer/DI feedback scores
+- **Compliance**: Adherence to platform policies
+
+## 8. Risk Mitigation Architecture
+
+### 8.1 Commission Protection Measures
+
+#### 8.1.1 Technical Controls
+- **Communication Monitoring**: AI-powered pattern detection for bypass attempts
+- **Contact Obfuscation**: Temporary phone numbers and email forwarding
+- **Watermarking**: Unique identifiers in all shared documents
+- **Blockchain Ledger**: Immutable transaction records
+
+#### 8.1.2 Legal & Contractual Controls
+- **Agent Agreements**: Legal contracts with anti-bypass clauses
+- **DI Contracts**: Confidentiality and non-compete agreements
+- **Buyer Terms**: Platform usage and commission acknowledgment
+- **Penalty System**: Fines and platform banning for violations
+# DigiAGIS Platform: Software Architecture Document
+
+## 1. Executive Summary
+
+### 1.1 Vision Statement
+To create a trusted digital marketplace that bridges the gap between property seekers and AGIS-certified agents through a network of Deal Initiators (DIs), ensuring secure, documented property transactions while preventing commission bypass.
+
+### 1.2 Core Problem Statement
+The current property market suffers from:
+- Difficulty identifying legitimate property owners among multiple agents
+- Lack of transparency in property documentation
+- Risk of agents bypassing platforms to avoid commission payments
+- Inefficient deal initiation and verification processes
+
+### 1.3 Solution Overview
+A platform that introduces Deal Initiators as intermediaries who facilitate connections while protecting platform revenue through controlled information flow and secure communication channels.
+
+## 2. System Architecture
+
+### 2.1 High-Level Architecture
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Buyer/Seller  │    │ Deal Initiator   │    │  AGIS Agent     │
+│                 │    │  (Platform DI)   │    │                 │
+└─────────┬───────┘    └─────────┬────────┘    └─────────┬───────┘
+          │                      │                       │
+          └──────────────────────┼───────────────────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  │   DigiAGIS Platform         │
+                  │   (Orchestration Layer)     │
+                  └──────────────┬──────────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  │   AGIS Integration &        │
+                  │   Document Verification     │
+                  └─────────────────────────────┘
+```
+
+### 2.2 Core Components
+
+#### 2.2.1 User Management Module
+- **Buyer/Seller Registration**: Normal email registration with property preferences
+- **Agent Onboarding**: Official @digiagis emails with AGIS certification verification
+- **Deal Initiator Program**: Platform-employed DIs with specialized training
+- **Admin/Funder Access**: Platform oversight and agent management
+
+#### 2.2.2 Property Marketplace Module
+- **Property Listings**: Agent-uploaded properties with AGIS documentation
+- **Verification System**: Document authenticity verification workflow
+- **Search & Discovery**: Location-based property matching
+- **Trust Scoring**: Agent and property reliability metrics
+
+#### 2.2.3 Deal Initiation Engine
+- **Smart Matching**: AI-powered connection between buyers and DIs
+- **Information Control**: Controlled disclosure of contact details
+- **Commission Protection**: Prevention of direct agent-buyer communication
+- **Deal Tracking**: End-to-end transaction monitoring
+
+#### 2.2.4 Communication System
+- **Secure Messaging**: Encrypted in-platform communication
+- **Controlled Contact**: Progressive information disclosure
+- **Deal Rooms**: Secure spaces for transaction discussions
+- **Notification System**: Real-time updates for all parties
+
+## 3. Workflow Architecture
+
+### 3.1 Property Discovery & Verification Workflow
+
+```
+Phase 1: Property Listing & Verification
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Agent     │ →  │ Document    │ →  │ Platform    │
+│  Lists      │    │ Upload &    │    │ Verification│
+│ Property    │    │ AGIS Check  │    │ & Approval  │
+└─────────────┘    └─────────────┘    └─────────────┘
+
+Phase 2: Buyer Discovery & DI Assignment
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Buyer     │ →  │ Property    │ →  │ Deal        │
+│  Searches   │    │ Match & DI  │    │ Initiator   │
+│  Property   │    │ Assignment  │    │ Assigned    │
+└─────────────┘    └─────────────┘    └─────────────┘
+
+Phase 3: Controlled Introduction & Deal Making
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   DI        │ →  │ Agent       │ →  │ Secure Deal │
+│ Contacts    │    │ Contact &   │    │ Room with   │
+│ Agent       │    │ Discussion  │    │ All Parties │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### 3.2 Commission Protection Workflow
+
+#### 3.2.1 Information Control Protocol
+1. **Initial Contact**: Buyer contacts DI through platform
+2. **Property Matching**: DI identifies suitable agents/properties
+3. **Agent Outreach**: DI contacts agent without revealing buyer details
+4. **Deal Room Creation**: Platform creates secure communication channel
+5. **Progressive Disclosure**: Buyer details revealed only after commitment
+
+#### 3.2.2 Commission Assurance Mechanisms
+- **Platform-Mediated Payments**: All financial transactions through platform
+- **Escrow Services**: Funds held until deal completion
+- **Performance Tracking**: DI and agent performance monitoring
+- **Contract Enforcement**: Legal agreements preventing commission avoidance
+
+## 4. Data Architecture
+
+### 4.1 Information Segmentation
+
+#### 4.1.1 Public Information (Visible to All)
+- Property details (location, size, price range)
+- Agent trust scores and verification status
+- Property verification status
+- DI availability and ratings
+
+#### 4.1.2 Restricted Information (Platform & DI Only)
+- Buyer contact information
+- Buyer budget and preferences
+- Communication history
+- Deal negotiation details
+
+#### 4.1.3 Progressive Disclosure Timeline
+```
+Day 1-3: DI works with buyer to understand needs
+Day 4-7: DI contacts agents without revealing buyer identity
+Day 8+: Secure deal room with all parties, full disclosure
+```
+
+### 4.2 Security Architecture
+
+#### 4.2.1 Data Protection Layers
+- **Encryption**: End-to-end encryption for all communications
+- **Access Control**: Role-based access to sensitive information
+- **Audit Logging**: Complete transaction history tracking
+- **Compliance**: GDPR, local data protection regulations
+
+## 5. Business Logic Architecture
+
+### 5.1 Commission Model
+
+#### 5.1.1 Revenue Streams
+1. **Platform Commission**: 2-5% of transaction value
+2. **Verification Fees**: Fixed fee for document verification
+3. **Subscription Fees**: Agent premium account subscriptions
+4. **DI Commission Sharing**: Platform-DI revenue sharing
+
+#### 5.1.2 Commission Distribution
+```
+Total Commission: 5%
+- Platform: 2%
+- Deal Initiator: 3%
+- Agent: Receives full agreed price from buyer
+```
+
+### 5.2 Trust and Verification System
+
+#### 5.2.1 Multi-Layer Verification
+1. **Agent Verification**: AGIS certification and background checks
+2. **Document Verification**: AGIS record cross-referencing
+3. **Property Verification**: Physical verification where possible
+4. **Transaction Verification**: Legal document authentication
+
+## 6. Technology Stack Architecture
+
+### 6.1 Frontend Architecture
+- **Framework**: React.js with Material-UI
+- **State Management**: Redux/Context API
+- **Real-time Communication**: WebSocket for live updates
+- **Mobile Responsive**: Progressive Web App capabilities
+
+### 6.2 Backend Architecture
+- **API Framework**: Node.js with Express.js
+- **Database**: PostgreSQL for relational data, Redis for caching
+- **File Storage**: AWS S3 for document storage
+- **Search Engine**: Elasticsearch for property search
+
+### 6.3 Integration Architecture
+- **AGIS API Integration**: Secure government system connectivity
+- **Payment Gateway**: Flutterwave/Paystack integration
+- **SMS/Email Services**: Twilio, SendGrid for notifications
+- **Mapping Services**: Google Maps/Mapbox integration
+
+## 7. Operational Architecture
+
+### 7.1 Deal Initiator Program
+
+#### 7.1.1 DI Recruitment & Training
+- **Background Checks**: Comprehensive screening process
+- **AGIS Training**: Understanding of property documentation
+- **Platform Training**: System usage and ethical guidelines
+- **Performance Monitoring**: Continuous quality assessment
+
+#### 7.1.2 DI Workflow Management
+- **Case Assignment**: Automated DI-property matching
+- **Performance Metrics**: Success rate, response time, customer satisfaction
+- **Commission Structure**: Performance-based incentive model
+- Quality Assurance: Regular audit and feedback
+
+### 7.2 Agent Management
+
+#### 7.2.1 Onboarding Process
+- **AGIS Verification**: Certification authenticity check
+- **Document Upload**: Required property documentation
+- **Platform Training**: System usage and commission structure
+- **Contract Signing**: Legal agreement preventing bypass
+
+#### 7.2.2 Performance Monitoring
+- **Response Time**: Time to respond to DI inquiries
+- **Deal Success Rate**: Percentage of initiated deals closed
+- **Customer Satisfaction**: Buyer/DI feedback scores
+- **Compliance**: Adherence to platform policies
+
+## 8. Risk Mitigation Architecture
+
+### 8.1 Commission Protection Measures
+
+#### 8.1.1 Technical Controls
+- **Communication Monitoring**: AI-powered pattern detection for bypass attempts
+- **Contact Obfuscation**: Temporary phone numbers and email forwarding
+- **Watermarking**: Unique identifiers in all shared documents
+- **Blockchain Ledger**: Immutable transaction records
+
+#### 8.1.2 Legal & Contractual Controls
+- **Agent Agreements**: Legal contracts with anti-bypass clauses
+- **DI Contracts**: Confidentiality and non-compete agreements
+- **Buyer Terms**: Platform usage and commission acknowledgment
+- **Penalty System**: Fines and platform banning for violations
+
+### 8.2 Fraud Prevention
+
+#### 8.2.1 Identity Verification
+- **KYC Processes**: Know Your Customer verification
+- **Document Authentication**: AI-powered document verification
+- **Behavioral Analysis**: Unusual pattern detection
+- **Escrow Services**: Secure fund handling
+
+## 9. Scalability Architecture
+
+### 9.1 Growth Projections
+- **Phase 1**: Abuja-focused operations (6 months)
+- **Phase 2**: Expansion to other Nigerian states (12 months)
+- **Phase 3**: Regional expansion (24 months)
+- **Phase 4**: Additional service verticals (36 months)
+
+### 9.2 Technical Scalability
+- **Microservices Architecture**: Independent service scaling
+- **Load Balancing**: Distributed traffic management
+- **Database Sharding**: Horizontal data partitioning
+- **CDN Integration**: Global content delivery
+
+## 10. Success Metrics & KPIs
+
+### 10.1 Platform Performance
+- **Transaction Volume**: Number of successful deals monthly
+- **Commission Revenue**: Total platform earnings
+- **User Growth**: New buyers, sellers, agents, DIs
+- **Retention Rates**: User and agent platform loyalty
+# DigiAGIS Platform: Software Architecture Document
+
+## 1. Executive Summary
+
+### 1.1 Vision Statement
+To create a trusted digital marketplace that bridges the gap between property seekers and AGIS-certified agents through a network of Deal Initiators (DIs), ensuring secure, documented property transactions while preventing commission bypass.
+
+### 1.2 Core Problem Statement
+The current property market suffers from:
+- Difficulty identifying legitimate property owners among multiple agents
+- Lack of transparency in property documentation
+- Risk of agents bypassing platforms to avoid commission payments
+- Inefficient deal initiation and verification processes
+
+### 1.3 Solution Overview
+A platform that introduces Deal Initiators as intermediaries who facilitate connections while protecting platform revenue through controlled information flow and secure communication channels.
+
+## 2. System Architecture
+
+### 2.1 High-Level Architecture
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Buyer/Seller  │    │ Deal Initiator   │    │  AGIS Agent     │
+│                 │    │  (Platform DI)   │    │                 │
+└─────────┬───────┘    └─────────┬────────┘    └─────────┬───────┘
+          │                      │                       │
+          └──────────────────────┼───────────────────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  │   DigiAGIS Platform         │
+                  │   (Orchestration Layer)     │
+                  └──────────────┬──────────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  │   AGIS Integration &        │
+                  │   Document Verification     │
+                  └─────────────────────────────┘
+```
+
+### 2.2 Core Components
+
+#### 2.2.1 User Management Module
+- **Buyer/Seller Registration**: Normal email registration with property preferences
+- **Agent Onboarding**: Official @digiagis emails with AGIS certification verification
+- **Deal Initiator Program**: Platform-employed DIs with specialized training
+- **Admin/Funder Access**: Platform oversight and agent management
+
+#### 2.2.2 Property Marketplace Module
+- **Property Listings**: Agent-uploaded properties with AGIS documentation
+- **Verification System**: Document authenticity verification workflow
+- **Search & Discovery**: Location-based property matching
+- **Trust Scoring**: Agent and property reliability metrics
+
+#### 2.2.3 Deal Initiation Engine
+- **Smart Matching**: AI-powered connection between buyers and DIs
+- **Information Control**: Controlled disclosure of contact details
+- **Commission Protection**: Prevention of direct agent-buyer communication
+- **Deal Tracking**: End-to-end transaction monitoring
+
+#### 2.2.4 Communication System
+- **Secure Messaging**: Encrypted in-platform communication
+- **Controlled Contact**: Progressive information disclosure
+- **Deal Rooms**: Secure spaces for transaction discussions
+- **Notification System**: Real-time updates for all parties
+
+## 3. Workflow Architecture
+
+### 3.1 Property Discovery & Verification Workflow
+
+```
+Phase 1: Property Listing & Verification
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Agent     │ →  │ Document    │ →  │ Platform    │
+│  Lists      │    │ Upload &    │    │ Verification│
+│ Property    │    │ AGIS Check  │    │ & Approval  │
+└─────────────┘    └─────────────┘    └─────────────┘
+
+Phase 2: Buyer Discovery & DI Assignment
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Buyer     │ →  │ Property    │ →  │ Deal        │
+│  Searches   │    │ Match & DI  │    │ Initiator   │
+│  Property   │    │ Assignment  │    │ Assigned    │
+└─────────────┘    └─────────────┘    └─────────────┘
+
+Phase 3: Controlled Introduction & Deal Making
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   DI        │ →  │ Agent       │ →  │ Secure Deal │
+│ Contacts    │    │ Contact &   │    │ Room with   │
+│ Agent       │    │ Discussion  │    │ All Parties │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### 3.2 Commission Protection Workflow
+
+#### 3.2.1 Information Control Protocol
+1. **Initial Contact**: Buyer contacts DI through platform
+2. **Property Matching**: DI identifies suitable agents/properties
+3. **Agent Outreach**: DI contacts agent without revealing buyer details
+4. **Deal Room Creation**: Platform creates secure communication channel
+5. **Progressive Disclosure**: Buyer details revealed only after commitment
+
+#### 3.2.2 Commission Assurance Mechanisms
+- **Platform-Mediated Payments**: All financial transactions through platform
+- **Escrow Services**: Funds held until deal completion
+- **Performance Tracking**: DI and agent performance monitoring
+- **Contract Enforcement**: Legal agreements preventing commission avoidance
+
+## 4. Data Architecture
+
+### 4.1 Information Segmentation
+
+#### 4.1.1 Public Information (Visible to All)
+- Property details (location, size, price range)
+- Agent trust scores and verification status
+- Property verification status
+- DI availability and ratings
+
+#### 4.1.2 Restricted Information (Platform & DI Only)
+- Buyer contact information
+- Buyer budget and preferences
+- Communication history
+- Deal negotiation details
+
+#### 4.1.3 Progressive Disclosure Timeline
+```
+Day 1-3: DI works with buyer to understand needs
+Day 4-7: DI contacts agents without revealing buyer identity
+Day 8+: Secure deal room with all parties, full disclosure
+```
+
+### 4.2 Security Architecture
+
+#### 4.2.1 Data Protection Layers
+- **Encryption**: End-to-end encryption for all communications
+- **Access Control**: Role-based access to sensitive information
+- **Audit Logging**: Complete transaction history tracking
+- **Compliance**: GDPR, local data protection regulations
+
+## 5. Business Logic Architecture
+
+### 5.1 Commission Model
+
+#### 5.1.1 Revenue Streams
+1. **Platform Commission**: 2-5% of transaction value
+2. **Verification Fees**: Fixed fee for document verification
+3. **Subscription Fees**: Agent premium account subscriptions
+4. **DI Commission Sharing**: Platform-DI revenue sharing
+
+#### 5.1.2 Commission Distribution
+```
+Total Commission: 5%
+- Platform: 2%
+- Deal Initiator: 3%
+- Agent: Receives full agreed price from buyer
+```
+
+### 5.2 Trust and Verification System
+
+#### 5.2.1 Multi-Layer Verification
+1. **Agent Verification**: AGIS certification and background checks
+2. **Document Verification**: AGIS record cross-referencing
+3. **Property Verification**: Physical verification where possible
+4. **Transaction Verification**: Legal document authentication
+
+## 6. Technology Stack Architecture
+
+### 6.1 Frontend Architecture
+- **Framework**: React.js with Material-UI
+- **State Management**: Redux/Context API
+- **Real-time Communication**: WebSocket for live updates
+- **Mobile Responsive**: Progressive Web App capabilities
+
+### 6.2 Backend Architecture
+- **API Framework**: Node.js with Express.js
+- **Database**: PostgreSQL for relational data, Redis for caching
+- **File Storage**: AWS S3 for document storage
+- **Search Engine**: Elasticsearch for property search
+
+### 6.3 Integration Architecture
+- **AGIS API Integration**: Secure government system connectivity
+- **Payment Gateway**: Flutterwave/Paystack integration
+- **SMS/Email Services**: Twilio, SendGrid for notifications
+- **Mapping Services**: Google Maps/Mapbox integration
+
+## 7. Operational Architecture
+
+### 7.1 Deal Initiator Program
+
+#### 7.1.1 DI Recruitment & Training
+- **Background Checks**: Comprehensive screening process
+- **AGIS Training**: Understanding of property documentation
+- **Platform Training**: System usage and ethical guidelines
+- **Performance Monitoring**: Continuous quality assessment
+
+#### 7.1.2 DI Workflow Management
+- **Case Assignment**: Automated DI-property matching
+- **Performance Metrics**: Success rate, response time, customer satisfaction
+- **Commission Structure**: Performance-based incentive model
+- Quality Assurance: Regular audit and feedback
+
+### 7.2 Agent Management
+
+#### 7.2.1 Onboarding Process
+- **AGIS Verification**: Certification authenticity check
+- **Document Upload**: Required property documentation
+- **Platform Training**: System usage and commission structure
+- **Contract Signing**: Legal agreement preventing bypass
+
+#### 7.2.2 Performance Monitoring
+- **Response Time**: Time to respond to DI inquiries
+- **Deal Success Rate**: Percentage of initiated deals closed
+- **Customer Satisfaction**: Buyer/DI feedback scores
+- **Compliance**: Adherence to platform policies
+
+## 8. Risk Mitigation Architecture
+
+### 8.1 Commission Protection Measures
+
+#### 8.1.1 Technical Controls
+- **Communication Monitoring**: AI-powered pattern detection for bypass attempts
+- **Contact Obfuscation**: Temporary phone numbers and email forwarding
+- **Watermarking**: Unique identifiers in all shared documents
+- **Blockchain Ledger**: Immutable transaction records
+
+#### 8.1.2 Legal & Contractual Controls
+- **Agent Agreements**: Legal contracts with anti-bypass clauses
+- **DI Contracts**: Confidentiality and non-compete agreements
+- **Buyer Terms**: Platform usage and commission acknowledgment
+- **Penalty System**: Fines and platform banning for violations
+
+### 8.2 Fraud Prevention
+
+#### 8.2.1 Identity Verification
+- **KYC Processes**: Know Your Customer verification
+- **Document Authentication**: AI-powered document verification
+- **Behavioral Analysis**: Unusual pattern detection
+- **Escrow Services**: Secure fund handling
+
+## 9. Scalability Architecture
+
+### 9.1 Growth Projections
+- **Phase 1**: Abuja-focused operations (6 months)
+- **Phase 2**: Expansion to other Nigerian states (12 months)
+- **Phase 3**: Regional expansion (24 months)
+- **Phase 4**: Additional service verticals (36 months)
+
+### 9.2 Technical Scalability
+- **Microservices Architecture**: Independent service scaling
+- **Load Balancing**: Distributed traffic management
+- **Database Sharding**: Horizontal data partitioning
+- **CDN Integration**: Global content delivery
+
+## 10. Success Metrics & KPIs
+
+### 10.1 Platform Performance
+- **Transaction Volume**: Number of successful deals monthly
+- **Commission Revenue**: Total platform earnings
+- **User Growth**: New buyers, sellers, agents, DIs
+- **Retention Rates**: User and agent platform loyalty
+
+### 10.2 Quality Metrics
+- **Deal Success Rate**: Percentage of initiated deals that close
+- **Average Deal Time**: Time from initiation to completion
+- **Customer Satisfaction**: NPS and user feedback scores
+- **Dispute Resolution**: Success rate in resolving issues
+
+## 11. Conclusion
+
+This architecture creates a sustainable ecosystem where:
+- **Buyers/Sellers** get access to verified properties and professional assistance
+- **Agents** gain qualified leads and streamlined verification processes
+- **Deal Initiators** earn commissions through platform-facilitated introductions
+- **Platform** generates revenue while maintaining control over the transaction ecosystem
+
+The key innovation is the Deal Initiator role combined with controlled information flow, ensuring platform value is maintained while providing superior service to all participants.
+### 10.2 Quality Metrics
+- **Deal Success Rate**: Percentage of initiated deals that close
+- **Average Deal Time**: Time from initiation to completion
+- **Customer Satisfaction**: NPS and user feedback scores
+- **Dispute Resolution**: Success rate in resolving issues
+
+## 11. Conclusion
+
+This architecture creates a sustainable ecosystem where:
+- **Buyers/Sellers** get access to verified properties and professional assistance
+- **Agents** gain qualified leads and streamlined verification processes
+- **Deal Initiators** earn commissions through platform-facilitated introductions
+- **Platform** generates revenue while maintaining control over the transaction ecosystem
+
+The key innovation is the Deal Initiator role combined with controlled information flow, ensuring platform value is maintained while providing superior service to all participants.
+### 8.2 Fraud Prevention
+
+#### 8.2.1 Identity Verification
+- **KYC Processes**: Know Your Customer verification
+- **Document Authentication**: AI-powered document verification
+- **Behavioral Analysis**: Unusual pattern detection
+- **Escrow Services**: Secure fund handling
+
+## 9. Scalability Architecture
+
+### 9.1 Growth Projections
+- **Phase 1**: Abuja-focused operations (6 months)
+- **Phase 2**: Expansion to other Nigerian states (12 months)
+- **Phase 3**: Regional expansion (24 months)
+- **Phase 4**: Additional service verticals (36 months)
+
+### 9.2 Technical Scalability
+- **Microservices Architecture**: Independent service scaling
+- **Load Balancing**: Distributed traffic management
+- **Database Sharding**: Horizontal data partitioning
+- **CDN Integration**: Global content delivery
+
+## 10. Success Metrics & KPIs
+
+### 10.1 Platform Performance
+- **Transaction Volume**: Number of successful deals monthly
+- **Commission Revenue**: Total platform earnings
+- **User Growth**: New buyers, sellers, agents, DIs
+- **Retention Rates**: User and agent platform loyalty
+
+### 10.2 Quality Metrics
+- **Deal Success Rate**: Percentage of initiated deals that close
+- **Average Deal Time**: Time from initiation to completion
+- **Customer Satisfaction**: NPS and user feedback scores
+- **Dispute Resolution**: Success rate in resolving issues
+
+## 11. Conclusion
+
+This architecture creates a sustainable ecosystem where:
+- **Buyers/Sellers** get access to verified properties and professional assistance
+- **Agents** gain qualified leads and streamlined verification processes
+- **Deal Initiators** earn commissions through platform-facilitated introductions
+- **Platform** generates revenue while maintaining control over the transaction ecosystem
+
+The key innovation is the Deal Initiator role combined with controlled information flow, ensuring platform value is maintained while providing superior service to all participants.
               </CardContent>
             </Card>
           </Grid>
@@ -386,110 +1172,45 @@ const Verification = () => {
     );
   };
 
-  const AgentSelectionStep = ({ agents, onSelect, selectedAgent }) => (
+  // Instead of agent selection, show Deal Initiator contact info
+  const DealInitiatorContactStep = () => (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Choose a Verification Agent
+        Contact the Deal Initiator
       </Typography>
       <Typography variant="body2" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
-        Select from our verified AGIS agents to handle your verification request
+        For secure property verification, please contact our certified Deal Initiator below. Agent details are hidden for platform security.
       </Typography>
-
-      <Grid container spacing={2}>
-        {agents.map((agent) => (
-          <Grid item xs={12} key={agent.id}>
-            <Card 
-              sx={{ 
-                cursor: 'pointer',
-                border: selectedAgent?.id === agent.id ? 2 : 1,
-                borderColor: selectedAgent?.id === agent.id ? 'primary.main' : 'divider',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: 3
-                }
-              }}
-              onClick={() => onSelect(agent)}
-            >
-              <CardContent>
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item>
-                    <Box sx={{ position: 'relative' }}>
-                      <Avatar src={agent.profileImage} sx={{ width: 60, height: 60 }} />
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          bottom: 2,
-                          right: 2,
-                          width: 12,
-                          height: 12,
-                          backgroundColor: agent.isOnline ? 'success.main' : 'grey.500',
-                          borderRadius: '50%',
-                          border: '2px solid white'
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  
-                  <Grid item xs>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="h6" sx={{ mr: 1 }}>
-                        {agent.name}
-                      </Typography>
-                      <VerifiedUser sx={{ color: 'primary.main', fontSize: 18 }} />
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, mb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Star sx={{ color: '#FF9800', fontSize: 18, mr: 0.5 }} />
-                        <Typography variant="body2">{agent.rating}</Typography>
-                      </Box>
-                      
-                      <Chip 
-                        label={`Trust Score: ${agent.trustScore}`} 
-                        color="success" 
-                        size="small" 
-                        variant="outlined"
-                      />
-                      
-                      <Typography variant="body2" color="text.secondary">
-                        {agent.completedJobs} jobs
-                      </Typography>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                      {agent.specialization.map((spec, index) => (
-                        <Chip key={index} label={spec} size="small" variant="outlined" />
-                      ))}
-                    </Box>
-                  </Grid>
-                  
-                  <Grid item>
-                    <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="h6" color="primary" gutterBottom>
-                        ₦{agent.price.toLocaleString()}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        ⏱️ {agent.responseTime} avg response
-                      </Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      {selectedAgent && (
-        <Alert severity="success" sx={{ mt: 2 }}>
-          Selected: <strong>{selectedAgent.name}</strong> - Trust Score: {selectedAgent.trustScore}
-        </Alert>
-      )}
+      <Card sx={{ p: 4, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+        <Avatar src={dealInitiator.profileImage} sx={{ width: 60, height: 60, mr: 4 }} />
+        <Box>
+          <Typography variant="h6" fontWeight="bold">
+            {dealInitiator.name}
+          </Typography>
+          <Chip label={`Tier: ${dealInitiator.tier}`} color="warning" sx={{ mr: 2 }} />
+          <Chip label="Verified" color="success" />
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Platform Phone: <strong>{dealInitiator.platformPhone}</strong>
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            WhatsApp: <a href={dealInitiator.whatsAppLink} target="_blank" rel="noopener noreferrer" className="text-primary-600 underline">Contact on WhatsApp</a>
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Response Time: {dealInitiator.responseTime}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Total Deals: {dealInitiator.deals}
+          </Typography>
+        </Box>
+      </Card>
+      <Alert severity="info" sx={{ mt: 3 }}>
+        For security, all communications and payments are managed by the platform. Agent details are only visible to Deal Initiators and platform admins.
+      </Alert>
     </Box>
   );
 
-  const ReviewStep = ({ verificationType, agent, documents, onConfirm }) => (
+  // Review step now only shows Deal Initiator details
+  const ReviewStep = ({ verificationType, dealInitiator, documents, onConfirm }) => (
     <Box>
       <Typography variant="h6" gutterBottom>
         Review Your Verification Request
@@ -506,7 +1227,6 @@ const Verification = () => {
               <Assignment sx={{ mr: 1 }} />
               Service Details
             </Typography>
-            
             {verificationType && (
               <Box sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -523,33 +1243,39 @@ const Verification = () => {
               </Box>
             )}
 
-            {/* Agent Details */}
+            {/* Deal Initiator Details */}
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
               <Person sx={{ mr: 1 }} />
-              Selected Agent
+              Deal Initiator
             </Typography>
-            
-            {agent && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Avatar src={agent.profileImage} sx={{ mr: 2 }} />
-                <Box>
-                  <Typography variant="body1" fontWeight="bold">
-                    {agent.name}
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Star sx={{ color: '#FF9800', fontSize: 16 }} />
-                    <Typography variant="body2">{agent.rating} • Trust Score: {agent.trustScore}</Typography>
-                  </Box>
-                </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+              <Avatar src={dealInitiator.profileImage} sx={{ mr: 2 }} />
+              <Box>
+                <Typography variant="body1" fontWeight="bold">
+                  {dealInitiator.name}
+                </Typography>
+                <Chip label={`Tier: ${dealInitiator.tier}`} color="warning" sx={{ mr: 2 }} />
+                <Chip label="Verified" color="success" />
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                  Platform Phone: <strong>{dealInitiator.platformPhone}</strong>
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  WhatsApp: <a href={dealInitiator.whatsAppLink} target="_blank" rel="noopener noreferrer" className="text-primary-600 underline">Contact on WhatsApp</a>
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                  Response Time: {dealInitiator.responseTime}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Total Deals: {dealInitiator.deals}
+                </Typography>
               </Box>
-            )}
+            </Box>
 
             {/* Documents */}
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
               <Description sx={{ mr: 1 }} />
               Documents ({documents.length})
             </Typography>
-            
             <List dense>
               {documents.map((doc, index) => (
                 <ListItem key={doc.id}>
@@ -569,7 +1295,6 @@ const Verification = () => {
             <Typography variant="h6" gutterBottom>
               Order Summary
             </Typography>
-            
             <Box sx={{ mb: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                 <Typography>Service Fee</Typography>
@@ -591,12 +1316,10 @@ const Verification = () => {
                 </Typography>
               </Box>
             </Box>
-
             <Button variant="contained" fullWidth size="large" onClick={onConfirm}>
               <AttachMoney sx={{ mr: 1 }} />
               Proceed to Payment
             </Button>
-            
             <Alert severity="info" sx={{ mt: 2 }}>
               You'll be redirected to a secure payment gateway. Your verification will start immediately after payment confirmation.
             </Alert>
@@ -606,65 +1329,58 @@ const Verification = () => {
     </Box>
   );
 
-  const ProgressStep = ({ verificationType, agent }) => (
+  // Progress step now only references Deal Initiator
+  const ProgressStep = ({ verificationType, dealInitiator }) => (
     <Box sx={{ textAlign: 'center', py: 4 }}>
       <CheckCircle sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
-      
       <Typography variant="h4" gutterBottom color="success.main">
         Verification Request Submitted!
       </Typography>
-      
       <Typography variant="h6" color="text.secondary" gutterBottom sx={{ mb: 4 }}>
-        Your {verificationType?.name} request has been received and assigned to {agent?.name}
+        Your {verificationType?.name} request has been received. Our Deal Initiator <strong>{dealInitiator.name}</strong> will coordinate your verification securely.
       </Typography>
-
       <Paper sx={{ p: 3, maxWidth: 600, margin: '0 auto' }}>
         <Typography variant="h6" gutterBottom>
           What happens next?
         </Typography>
-        
         <List>
           <ListItem>
             <ListItemIcon>
               <ScheduleSend color="primary" />
             </ListItemIcon>
             <ListItemText 
-              primary="Agent Notification"
-              secondary="Your assigned agent has been notified and will start working on your request within 1 hour"
+              primary="Deal Initiator Notification"
+              secondary={`Our Deal Initiator (${dealInitiator.name}) has been notified and will start working on your request within 1 hour.`}
             />
           </ListItem>
-          
           <ListItem>
             <ListItemIcon>
               <Description color="primary" />
             </ListItemIcon>
             <ListItemText 
               primary="Document Review"
-              secondary="The agent will review your uploaded documents and may request additional information if needed"
+              secondary="Your uploaded documents will be reviewed and you may be contacted for additional information if needed."
             />
           </ListItem>
-          
           <ListItem>
             <ListItemIcon>
               <VerifiedUser color="primary" />
             </ListItemIcon>
             <ListItemText 
               primary="AGIS Verification"
-              secondary="The agent will conduct the necessary checks and verification with AGIS records"
+              secondary="The Deal Initiator will coordinate AGIS checks and verification."
             />
           </ListItem>
-          
           <ListItem>
             <ListItemIcon>
               <Assignment color="primary" />
             </ListItemIcon>
             <ListItemText 
               primary="Report Generation"
-              secondary="You'll receive a comprehensive verification report with findings and recommendations"
+              secondary="You'll receive a comprehensive verification report with findings and recommendations."
             />
           </ListItem>
         </List>
-
         <Box sx={{ mt: 3 }}>
           <LinearProgress variant="determinate" value={25} sx={{ mb: 2 }} />
           <Typography variant="body2" color="text.secondary">
@@ -672,10 +1388,9 @@ const Verification = () => {
           </Typography>
         </Box>
       </Paper>
-
       <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>
         <Button variant="outlined" startIcon={<Message />}>
-          Message Agent
+          Message Deal Initiator
         </Button>
         <Button variant="contained" startIcon={<Assignment />}>
           View Dashboard

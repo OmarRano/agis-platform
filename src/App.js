@@ -1,3 +1,7 @@
+import DealInitiatorDashboard from './components/dashboard/DealInitiatorDashboard';
+import ForgotPassword from './components/auth/ForgotPassword';
+import ProfileDashboard from './components/dashboard/ProfileDashboard';
+import SettingsPage from './components/dashboard/SettingsPage';
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -59,99 +63,102 @@ function AppContent() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <div className="App">
-            {/* Header/Footer are rendered only when auth is available */}
-            {user && (
-              <Suspense fallback={<LoadingSkeleton type="header" />}>
-                <Header />
-              </Suspense>
-            )}
-            <main>
-              <Routes>
-              {/* Public */}
-              <Route
-                path="/login"
-                element={
-                  user ? (
-                    <Navigate to="/marketplace" />
-                  ) : (
-                    <Suspense fallback={<LoadingSkeleton type="page" />}>
-                      <Login />
-                    </Suspense>
-                  )
-                }
-              />
-              <Route
-                path="/signup"
-                element={
-                  user ? (
-                    <Navigate to="/marketplace" />
-                  ) : (
-                    <Suspense fallback={<LoadingSkeleton type="page" />}>
-                      <Signup />
-                    </Suspense>
-                  )
-                }
-              />
+        {user && (
+          <Suspense fallback={<LoadingSkeleton type="header" />}> 
+            <Header />
+          </Suspense>
+        )}
+        <main>
+          <Routes>
+            {/* New dashboard/auth routes */}
+            <Route path="/deal-initiator-dashboard" element={<DealInitiatorDashboard />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/profile" element={<ProfileDashboard />} />
+            <Route path="/settings" element={<SettingsPage />} />
 
-              {/* Public pages */}
-              <Route
-                path="/"
-                element={
-                  <Suspense fallback={<LoadingSkeleton type="page" />}>
-                    <Home />
+            {/* Public */}
+            <Route
+              path="/login"
+              element={
+                user ? (
+                  <Navigate to="/marketplace" />
+                ) : (
+                  <Suspense fallback={<LoadingSkeleton type="page" />}> 
+                    <Login />
                   </Suspense>
-                }
-              />
-              <Route
-                path="/marketplace"
-                element={
-                  <Suspense fallback={<LoadingSkeleton type="page" />}>
-                    <Marketplace />
+                )
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                user ? (
+                  <Navigate to="/marketplace" />
+                ) : (
+                  <Suspense fallback={<LoadingSkeleton type="page" />}> 
+                    <Signup />
                   </Suspense>
-                }
-              />
-              <Route
-                path="/verification"
-                element={
-                  <Suspense fallback={<LoadingSkeleton type="page" />}>
-                    <Verification />
-                  </Suspense>
-                }
-              />
+                )
+              }
+            />
 
-              {/* Protected */}
-              <Route
-                path="/founder-dashboard"
-                element={
-                  <ProtectedRoute requiredUserType="admin">
-                    <Suspense fallback={<LoadingSkeleton type="page" />}>
-                      <FounderDashboard />
-                    </Suspense>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/agent-dashboard"
-                element={
-                  <ProtectedRoute requiredUserType="agent">
-                    <Suspense fallback={<LoadingSkeleton type="page" />}>
-                      <AgentDashboard />
-                    </Suspense>
-                  </ProtectedRoute>
-                }
-              />
+            {/* Public pages */}
+            <Route
+              path="/"
+              element={
+                <Suspense fallback={<LoadingSkeleton type="page" />}> 
+                  <Home />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/marketplace"
+              element={
+                <Suspense fallback={<LoadingSkeleton type="page" />}> 
+                  <Marketplace />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/verification"
+              element={
+                <Suspense fallback={<LoadingSkeleton type="page" />}> 
+                  <Verification />
+                </Suspense>
+              }
+            />
 
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-            {user && (
-              <Suspense fallback={<LoadingSkeleton type="footer" />}>
-                <Footer />
-              </Suspense>
-            )}
-        </div>
+            {/* Protected */}
+            <Route
+              path="/founder-dashboard"
+              element={
+                <ProtectedRoute requiredUserType="admin"> 
+                  <Suspense fallback={<LoadingSkeleton type="page" />}> 
+                    <FounderDashboard />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/agent-dashboard"
+              element={
+                <ProtectedRoute requiredUserType="agent"> 
+                  <Suspense fallback={<LoadingSkeleton type="page" />}> 
+                    <AgentDashboard />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        {user && (
+          <Suspense fallback={<LoadingSkeleton type="footer" />}> 
+            <Footer />
+          </Suspense>
+        )}
       </Router>
     </ThemeProvider>
   );

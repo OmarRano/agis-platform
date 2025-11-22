@@ -29,4 +29,5 @@ export function sendSMS(to, message) {
   return Promise.resolve({ success: true });
 }
 
-export default { enqueueNotification, sendEmail, sendSMS };
+const notificationUtils = { enqueueNotification, sendEmail, sendSMS };
+export default notificationUtils;

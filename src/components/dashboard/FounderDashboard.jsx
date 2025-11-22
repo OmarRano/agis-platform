@@ -37,6 +37,38 @@ import { enqueueNotification } from '../../utils/notifications';
 
 const FounderDashboard = () => {
   // Mock data for demonstration
+  const [newAgent, setNewAgent] = useState({ name: '', personalEmail: '', agisId: '', officialEmail: '', status: 'active', tempPassword: '' });
+  const [agents, setAgents] = useState([
+    { id: 1, name: 'John Doe', agisId: 'AGIS001', officialEmail: 'john@agis.com', status: 'active', tempPassword: 'pass123' },
+    { id: 2, name: 'Jane Smith', agisId: 'AGIS002', officialEmail: 'jane@agis.com', status: 'pending', tempPassword: 'pass456' },
+  ]);
+  const [feeApprovals, setFeeApprovals] = useState([
+    { id: 1, agent: 'John Doe', agentId: 'AGIS001', amount: 50000, platformFee: 5000, token: 'abc123' },
+    { id: 2, agent: 'Jane Smith', agentId: 'AGIS002', amount: 75000, platformFee: 7500, token: 'def456' },
+  ]);
+  const [stats] = useState([
+    { title: 'Total Agents', value: 120, change: '+10%', icon: <People /> },
+    { title: 'Total Users', value: 3500, change: '+5%', icon: <TrendingUp /> },
+    { title: 'Verified Agents', value: 80, change: '+8%', icon: <VerifiedUser /> },
+    { title: 'Deals Closed', value: 240, change: '+12%', icon: <BusinessCenter /> },
+    { title: 'Revenue', value: '₦12M', change: '+15%', icon: <AttachMoney /> },
+    { title: 'Platform Fees', value: '₦1.2M', change: '+7%', icon: <ListAlt /> },
+  ]);
+  const [tierDistribution] = useState([
+    { name: 'Bronze', value: 40 },
+    { name: 'Silver', value: 30 },
+    { name: 'Gold', value: 20 },
+    { name: 'Platinum', value: 10 },
+  ]);
+  const COLORS = ['#FFD700', '#C0C0C0', '#CD7F32', '#4CAF50'];
+  const [revenueData] = useState([
+    { name: 'Jan', revenue: 100000 },
+    { name: 'Feb', revenue: 200000 },
+    { name: 'Mar', revenue: 300000 },
+    { name: 'Apr', revenue: 400000 },
+    { name: 'May', revenue: 500000 },
+    { name: 'Jun', revenue: 600000 },
+  ]);
   const userGrowthData = [
     { name: 'Jan', users: 100, agents: 20 },
     { name: 'Feb', users: 300, agents: 45 },
@@ -46,125 +78,19 @@ const FounderDashboard = () => {
     { name: 'Jun', users: 3500, agents: 400 },
   ];
 
-  const revenueData = [
-    { name: 'Jan', revenue: 50000 },
-    { name: 'Feb', revenue: 120000 },
-    { name: 'Mar', revenue: 250000 },
-    { name: 'Apr', revenue: 420000 },
-    { name: 'May', revenue: 680000 },
-    { name: 'Jun', revenue: 950000 },
-  ];
-
-  const tierDistribution = [
-    { name: 'Basic', value: 65 },
-    { name: 'Pro', value: 25 },
-    { name: 'Elite', value: 10 },
-  ];
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
-
-  const stats = [
-    { icon: <People />, title: 'Total Users', value: '3,500', change: '+25%' },
-    { icon: <VerifiedUser />, title: 'Verified Agents', value: '400', change: '+15%' },
-    { icon: <ListAlt />, title: 'Active Listings', value: '1,200', change: '+30%' },
-    { icon: <BusinessCenter />, title: 'Verification Jobs', value: '850', change: '+40%' },
-    { icon: <AttachMoney />, title: 'Monthly Revenue', value: '₦950K', change: '+35%' },
-    { icon: <TrendingUp />, title: 'Success Rate', value: '94%', change: '+5%' },
-  ];
-
-  const [feeApprovals, setFeeApprovals] = useState([
-    {
-      id: 1,
-      agent: 'Chinedu Okoro',
-      agentId: 'AGENT-001',
-      client: 'John Adebayo',
-      verificationId: 'VER-2024-001',
-      amount: 17000,
-      platformFee: 2000,
-      status: 'pending',
-      date: new Date().toLocaleString(),
-      token: generateToken('TK'),
-    }
-  ]);
-
-  const [agents, setAgents] = useState([
-    {
-      id: 1,
-      name: 'Chinedu Okoro',
-      personalEmail: 'chinedu@gmail.com',
-      officialEmail: 'chinedu.okoro@digiagis.com',
-      agisId: 'ABJ-AGIS-2847',
-      status: 'active',
-      joinDate: '2024-01-15',
-      tempPassword: 'digiagis2024',
-    }
-  ]);
-
-  const [newAgent, setNewAgent] = useState({
-    name: '',
-    personalEmail: '',
-    agisId: ''
-  });
-
-  const handleApproveFee = (id) => {
-    setFeeApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'approved' } : a));
-
-    const approval = feeApprovals.find(a => a.id === id);
-    if (approval) {
-      enqueueNotification(approval.agent, 'fee_approved', {
-        verificationId: approval.verificationId,
-        token: approval.token,
-        amount: approval.amount,
-        platformFee: approval.platformFee,
-        date: new Date().toISOString(),
-      });
-    }
-  };
-
-  const handleRejectFee = (id) => {
-    setFeeApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a));
-
-    const approval = feeApprovals.find(a => a.id === id);
-    if (approval) {
-      enqueueNotification(approval.agent, 'fee_rejected', {
-        verificationId: approval.verificationId,
-        token: approval.token,
-        amount: approval.amount,
-        platformFee: approval.platformFee,
-        date: new Date().toISOString(),
-      });
-    }
-  };
-
+  // Stub handlers
   const handleCreateAgent = () => {
-    if (!newAgent.name || !newAgent.personalEmail || !newAgent.agisId) {
-      return;
-    }
-
-    // Generate official email
-    const officialEmail = `${newAgent.name.toLowerCase().replace(/\s+/g, '.')}@digiagis.com`;
-    
-    const agent = {
-      id: agents.length + 1,
-      ...newAgent,
-      officialEmail,
-      status: 'pending',
-      joinDate: new Date().toISOString().split('T')[0],
-      tempPassword: 'digiagis2024'
-    };
-
-    setAgents(prev => [...prev, agent]);
-    
-    // Enqueue notification
-    enqueueNotification(newAgent.name, 'agent_account_created', {
-      officialEmail,
-      personalEmail: newAgent.personalEmail,
-      agisId: newAgent.agisId,
-      tempPassword: agent.tempPassword,
-      date: new Date().toISOString(),
-    });
-
-    setNewAgent({ name: '', personalEmail: '', agisId: '' });
+    // Example: Add new agent to agents list
+    setAgents(prev => [...prev, { ...newAgent, id: prev.length + 1, officialEmail: `${newAgent.name.toLowerCase().replace(/\s+/g, '')}@agis.com`, tempPassword: 'tempPass' }]);
+    setNewAgent({ name: '', personalEmail: '', agisId: '', officialEmail: '', status: 'active', tempPassword: '' });
+  };
+  const handleApproveFee = (id) => {
+    // Example: Remove fee approval from list
+    setFeeApprovals(prev => prev.filter(fee => fee.id !== id));
+  };
+  const handleRejectFee = (id) => {
+    // Example: Remove fee approval from list
+    setFeeApprovals(prev => prev.filter(fee => fee.id !== id));
   };
 
   const AgentManagementSection = () => (
