@@ -51,7 +51,7 @@ In Netlify Dashboard:
 
 ```
 REACT_APP_API_URL = https://your-api-domain.com
-REACT_APP_STRIPE_PUBLIC_KEY = pk_live_your_stripe_key
+REACT_APP_STRIPE_PUBLIC_KEY = <STRIPE_PUBLISHABLE_KEY>
 REACT_APP_ENABLE_PAYMENTS = true
 ```
 

@@ -19,7 +19,7 @@ REACT_APP_API_URL=https://your-api-domain.com
 
 ### 2. Payment Processing (Stripe)
 ```
-REACT_APP_STRIPE_PUBLIC_KEY=pk_live_your_stripe_key_here
+REACT_APP_STRIPE_PUBLIC_KEY=<STRIPE_PUBLISHABLE_KEY>
 ```
 - **Publishable Key** from Stripe (NOT secret key)
 - Get from: https://dashboard.stripe.com/apikeys
@@ -56,7 +56,7 @@ Click **"Edit variables"** and add:
 | Key | Value |
 |-----|-------|
 | `REACT_APP_API_URL` | `https://your-api-domain.com` |
-| `REACT_APP_STRIPE_PUBLIC_KEY` | `pk_live_your_key` |
+| `REACT_APP_STRIPE_PUBLIC_KEY` | `<STRIPE_PUBLISHABLE_KEY>` |
 | `REACT_APP_ENABLE_PAYMENTS` | `true` |
 | `REACT_APP_ENABLE_NOTIFICATIONS` | `true` |
 | `NODE_ENV` | `production` |
