@@ -12,7 +12,7 @@
 
 ### 1. API Configuration
 ```
-REACT_APP_API_URL=https://your-api-domain.com
+REACT_APP_API_URL=<YOUR_API_URL>
 ```
 - Your backend API endpoint (update to your actual domain)
 - Used for all API calls (login, signup, marketplace, etc.)
@@ -36,10 +36,10 @@ REACT_APP_ENABLE_NOTIFICATIONS=true
 
 ### 4. Build Environment
 ```
-NODE_ENV=production
+NODE_ENV=<NODE_ENV>
 CI=false
 ```
-- `NODE_ENV=production` tells React to use optimized builds
+- `NODE_ENV=<NODE_ENV>` tells React to use optimized builds
 - `CI=false` prevents warnings from blocking deployment
 
 ---
@@ -55,11 +55,11 @@ Click **"Edit variables"** and add:
 
 | Key | Value |
 |-----|-------|
-| `REACT_APP_API_URL` | `https://your-api-domain.com` |
+| `REACT_APP_API_URL` | `<YOUR_API_URL>` |
 | `REACT_APP_STRIPE_PUBLIC_KEY` | `<STRIPE_PUBLISHABLE_KEY>` |
 | `REACT_APP_ENABLE_PAYMENTS` | `true` |
 | `REACT_APP_ENABLE_NOTIFICATIONS` | `true` |
-| `NODE_ENV` | `production` |
+| `NODE_ENV` | `<NODE_ENV>` |
 | `CI` | `false` |
 
 ### Step 3: Redeploy
@@ -80,7 +80,7 @@ cp .env.example .env.local
 ### 2. Edit `.env.local` with your local values
 ```
 REACT_APP_API_URL=http://localhost:5000
-REACT_APP_STRIPE_PUBLIC_KEY=pk_test_your_test_key_here
+REACT_APP_STRIPE_PUBLIC_KEY=<STRIPE_PUBLISHABLE_KEY>
 REACT_APP_ENABLE_PAYMENTS=true
 ```
 
@@ -126,7 +126,7 @@ After deploying, open your site and check:
 ```javascript
 // Open browser console
 console.log(process.env.REACT_APP_API_URL)
-// Should show: https://api.digiagis.com
+// Should show: <YOUR_API_URL>
 ```
 
 ---

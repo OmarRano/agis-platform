@@ -19,7 +19,7 @@
   publish = "build"
 
 [build.environment]
-  NODE_ENV = "production"
+  NODE_ENV = "<NODE_ENV>"
   NODE_VERSION = "18"
   CI = "false"
 
@@ -60,11 +60,11 @@ git push origin main
 ### Step 3: Configure Environment Variables
 1. In Netlify dashboard → **Site settings** → **Build & deploy** → **Environment**
 2. Add these variables:
-   ```
-   REACT_APP_API_URL=https://your-api-domain.com
+  ```
+  REACT_APP_API_URL=<YOUR_API_URL>
   REACT_APP_STRIPE_PUBLIC_KEY=<STRIPE_PUBLISHABLE_KEY>
-   REACT_APP_ENABLE_PAYMENTS=true
-   ```
+  REACT_APP_ENABLE_PAYMENTS=true
+  ```
 3. Redeploy (Netlify will rebuild automatically)
 
 ### Step 4: Configure Custom Domain (Optional)
