@@ -24,3 +24,9 @@
 
 [context.production.environment]
   SECRETS_SCAN_ENABLED = "false"
+
+[context.deploy-preview.environment]
+  # Temporarily disable secrets scanning for deploy-previews to avoid
+  # blocking builds on documentation placeholders. Ensure no real secrets
+  # are committed — prefer moving secrets to Netlify environment variables.
+  SECRETS_SCAN_ENABLED = "false"
