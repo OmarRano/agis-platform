@@ -81,7 +81,7 @@ const Signup = () => {
       value: 'agent',
       label: 'Certified Agent',
       icon: <BusinessCenter />,
-      description: 'AGIS-certified property agent (requires official DigiAGIS email)'
+      description: 'AGIS-certified property agent (requires official Sorella email)'
     },
   ];
 
@@ -127,8 +127,8 @@ const Signup = () => {
         return;
       }
       // Validate agent emails
-      if (formData.userType === 'agent' && !formData.email.includes('@digiagis')) {
-        setError('Agents must use official DigiAGIS email addresses provided by the platform administrator.');
+      if (formData.userType === 'agent' && !formData.email.includes('@sorella')) {
+        setError('Agents must use official Sorella email addresses provided by the platform administrator.');
         return;
       }
     }
@@ -165,7 +165,7 @@ const Signup = () => {
         return (
           <Box>
             <Typography variant="h6" gutterBottom align="center">
-              How will you use DigiAGIS?
+              How will you use Sorella Real Estate?
             </Typography>
             <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
               Choose the account type that best describes you
@@ -395,7 +395,7 @@ const Signup = () => {
 
   return (
     <AuthLayout
-      title="Join DigiAGIS"
+      title="Join Sorella Real Estate"
       subtitle="Create your account in just a few steps"
     >
       <Stepper activeStep={activeStep} sx={{ mb: 4 }}>

@@ -28,7 +28,10 @@ import {
   Assignment,
   Star,
   LocationOn,
+  Storefront,
+  VerifiedUser,
 } from '@mui/icons-material';
+import DashboardQuickActions from '../common/DashboardQuickActions';
 
 const DealInitiatorDashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -119,6 +122,12 @@ const DealInitiatorDashboard = () => {
           sx={{ fontWeight: 'bold', fontSize: '0.9rem' }}
         />
       </Box>
+      <DashboardQuickActions actions={[
+        { label: 'Marketplace', description: 'Browse properties', path: '/marketplace', icon: <Storefront />, color: '#1a365d' },
+        { label: 'Find Agents', description: 'Connect with agents', path: '/agents', icon: <Person />, color: '#059669' },
+        { label: 'Verification', description: 'Verify documents', path: '/verification', icon: <VerifiedUser />, color: '#c9a227' },
+        { label: 'Buyer Preview', description: 'Open buyer view', path: '/buyer-dashboard', icon: <BusinessCenter />, color: '#dc2626' },
+      ]} />
 
       {/* Stats Overview */}
       <Grid container spacing={3} sx={{ mb: 4 }}>

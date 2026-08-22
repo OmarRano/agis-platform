@@ -6,6 +6,8 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import SuperAdminDashboard from './components/dashboard/SuperAdminDashboard';
+import BuyerDashboard from './components/dashboard/BuyerDashboard';
 
 // Context
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -19,6 +21,9 @@ const Footer = lazy(() => import(/* webpackChunkName: "Footer" */ './components/
 const Home = lazy(() => import(/* webpackChunkName: "Home" */ './pages/Home'));
 const Marketplace = lazy(() => import(/* webpackChunkName: "Marketplace" */ './pages/Marketplace'));
 const Verification = lazy(() => import(/* webpackChunkName: "Verification" */ './pages/Verification'));
+const AgentProfile = lazy(() => import(/* webpackChunkName: "AgentProfile" */ './pages/AgentProfile'));
+const Analytics = lazy(() => import(/* webpackChunkName: "Analytics" */ './pages/Analytics'));
+const FinanceDashboard = lazy(() => import(/* webpackChunkName: "FinanceDashboard" */ './components/dashboard/FinanceDashboard'));
 const FounderDashboard = lazy(() => import(/* webpackChunkName: "FounderDashboard" */ './components/dashboard/FounderDashboard'));
 const AgentDashboard = lazy(() => import(/* webpackChunkName: "AgentDashboard" */ './components/dashboard/AgentDashboard'));
 const Login = lazy(() => import(/* webpackChunkName: "Login" */ './components/auth/Login'));
@@ -27,29 +32,30 @@ const Signup = lazy(() => import(/* webpackChunkName: "Signup" */ './components/
 
 const theme = createTheme({
   palette: {
-    primary: { main: '#2E7D32' },
-    secondary: { main: '#FF6F00' },
+    primary: { main: '#1a365d' },
+    secondary: { main: '#c9a227' },
   },
 });
 
 function ProtectedRoute({ children, requiredUserType }) {
   const { user, loading } = useAuth();
+  const requiredRoles = Array.isArray(requiredUserType) ? requiredUserType : [requiredUserType];
 
   if (loading) return <div>Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
   
   // If admin tries to access user pages, redirect to founder dashboard
-  if (user.userType === 'admin' && requiredUserType !== 'admin') {
-    return <Navigate to="/founder-dashboard" replace />;
+  if ((user.userType === 'admin' || user.userType === 'super-admin') && !requiredRoles.includes(user.userType)) {
+    return <Navigate to={user.userType === 'super-admin' ? '/super-admin' : '/admin'} replace />;
   }
   
   // If agent tries to access admin pages, redirect to agent dashboard
-  if (user.userType === 'agent' && requiredUserType === 'admin') {
+  if (user.userType === 'agent' && requiredRoles.some((role) => role === 'admin' || role === 'super-admin')) {
     return <Navigate to="/agent-dashboard" replace />;
   }
   
   // Check if user has required permission
-  if (requiredUserType && user.userType !== requiredUserType) {
+  if (requiredUserType && !requiredRoles.includes(user.userType)) {
     return <Navigate to="/" replace />;
   }
 
@@ -71,7 +77,13 @@ function AppContent() {
         <main>
           <Routes>
             {/* New dashboard/auth routes */}
-            <Route path="/deal-initiator-dashboard" element={<DealInitiatorDashboard />} />
+            <Route path="/deal-initiator-dashboard" element={<ProtectedRoute requiredUserType="deal-initiator"><DealInitiatorDashboard /></ProtectedRoute>} />
+            <Route path="/deal-initiator" element={<ProtectedRoute requiredUserType="deal-initiator"><DealInitiatorDashboard /></ProtectedRoute>} />
+            <Route path="/super-admin" element={<ProtectedRoute requiredUserType="super-admin"><SuperAdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute requiredUserType="admin"><FounderDashboard /></ProtectedRoute>} />
+            <Route path="/buyer-dashboard" element={<ProtectedRoute requiredUserType="buyer"><BuyerDashboard /></ProtectedRoute>} />
+            <Route path="/finance" element={<ProtectedRoute requiredUserType="admin"><FinanceDashboard /></ProtectedRoute>} />
+            <Route path="/analytics" element={<ProtectedRoute requiredUserType={['super-admin', 'admin']}><Suspense fallback={<LoadingSkeleton type="page" />}><Analytics /></Suspense></ProtectedRoute>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/profile" element={<ProfileDashboard />} />
             <Route path="/settings" element={<SettingsPage />} />
@@ -124,6 +136,14 @@ function AppContent() {
               element={
                 <Suspense fallback={<LoadingSkeleton type="page" />}> 
                   <Verification />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/agents"
+              element={
+                <Suspense fallback={<LoadingSkeleton type="page" />}>
+                  <AgentProfile />
                 </Suspense>
               }
             />

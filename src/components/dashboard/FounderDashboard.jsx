@@ -14,6 +14,9 @@ import {
   BusinessCenter,
   AttachMoney,
   ListAlt,
+  Dashboard,
+  Storefront,
+  Person,
 } from '@mui/icons-material';
 import {
   LineChart,
@@ -34,6 +37,7 @@ import { Button, Chip, TextField } from '@mui/material';
 import { Mail } from '@mui/icons-material';
 import { generateToken } from '../../utils/token';
 import { enqueueNotification } from '../../utils/notifications';
+import DashboardQuickActions from '../common/DashboardQuickActions';
 
 const FounderDashboard = () => {
   // Mock data for demonstration
@@ -277,6 +281,12 @@ const FounderDashboard = () => {
       <Typography variant="subtitle1" color="text.secondary" gutterBottom sx={{ mb: 4 }}>
         Real-time platform performance and growth metrics
       </Typography>
+      <DashboardQuickActions actions={[
+        { label: 'Super Admin', description: 'Platform oversight', path: '/super-admin', icon: <Dashboard />, color: '#7c3aed' },
+        { label: 'Marketplace', description: 'View listings', path: '/marketplace', icon: <Storefront />, color: '#059669' },
+        { label: 'Verification', description: 'Review documents', path: '/verification', icon: <VerifiedUser />, color: '#c9a227' },
+        { label: 'Agent Preview', description: 'Open agent view', path: '/agent-dashboard', icon: <Person />, color: '#1a365d' },
+      ]} />
 
       {/* Key Metrics Grid */}
       <Grid container spacing={3} sx={{ mb: 4 }}>

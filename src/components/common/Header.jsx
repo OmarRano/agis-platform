@@ -16,10 +16,16 @@ const Header = () => {
   };
 
   const handleDashboard = () => {
-    if (user.userType === 'agent') {
-      navigate('/agent-dashboard');
+    if (user.userType === 'super-admin') {
+      navigate('/super-admin');
     } else if (user.userType === 'admin') {
-      navigate('/founder-dashboard');
+      navigate('/admin');
+    } else if (user.userType === 'deal-initiator') {
+      navigate('/deal-initiator');
+    } else if (user.userType === 'buyer') {
+      navigate('/buyer-dashboard');
+    } else if (user.userType === 'agent') {
+      navigate('/agent-dashboard');
     }
     setMenuOpen(false);
   };
@@ -31,7 +37,7 @@ const Header = () => {
           {/* Logo & Title */}
           <div className="flex items-center cursor-pointer" onClick={() => navigate('/')}> 
             <Shield className="w-7 h-7 text-green-600 mr-2" />
-            <span className="text-lg md:text-2xl font-bold text-gray-900">DigiAGIS</span>
+            <span className="text-lg md:text-2xl font-bold text-gray-900">SORELLA Real Estate</span>
           </div>
 
           {/* Desktop Nav */}
@@ -60,18 +66,9 @@ const Header = () => {
                 {/* Dropdown menu */}
                 {menuOpen && (
                   <div className="absolute right-4 top-16 bg-white shadow-lg rounded-lg py-2 w-48 z-50">
-                    {(user.userType === 'admin' || user.userType === 'agent' || user.userType === 'deal-initiator') && (
+                    {(user.userType === 'super-admin' || user.userType === 'admin' || user.userType === 'agent' || user.userType === 'deal-initiator' || user.userType === 'buyer') && (
                       <button
-                        onClick={() => {
-                          if (user.userType === 'agent') {
-                            navigate('/agent-dashboard');
-                          } else if (user.userType === 'admin') {
-                            navigate('/founder-dashboard');
-                          } else if (user.userType === 'deal-initiator') {
-                            navigate('/deal-initiator-dashboard');
-                          }
-                          setMenuOpen(false);
-                        }}
+                        onClick={() => { handleDashboard(); }}
                         className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
                       >
                         <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard

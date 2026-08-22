@@ -34,6 +34,9 @@ import {
   CheckCircle,
   PendingActions,
   AccountBalance,
+  Storefront,
+  VerifiedUser as VerificationIcon,
+  People,
 } from '@mui/icons-material';
 import {
   LineChart,
@@ -49,6 +52,7 @@ import {
 } from 'recharts';
 import { generateToken } from '../../utils/token';
 import { enqueueNotification } from '../../utils/notifications';
+import DashboardQuickActions from '../common/DashboardQuickActions';
 
 // Tab panel component
 function TabPanel({ children, value, index, ...other }) {
@@ -358,6 +362,12 @@ const AgentDashboard = () => {
           </Button>
         </Box>
       </Box>
+      <DashboardQuickActions actions={[
+        { label: 'Marketplace', description: 'View property demand', path: '/marketplace', icon: <Storefront />, color: '#1a365d' },
+        { label: 'Verification', description: 'Manage document work', path: '/verification', icon: <VerificationIcon />, color: '#c9a227' },
+        { label: 'Find Agents', description: 'Connect with peers', path: '/agents', icon: <People />, color: '#059669' },
+        { label: 'Buyer Preview', description: 'Open buyer view', path: '/buyer-dashboard', icon: <Person />, color: '#dc2626' },
+      ]} />
 
       {/* Agent Profile Summary */}
       <Card sx={{ mb: 4, background: 'linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)', color: 'white' }}>
