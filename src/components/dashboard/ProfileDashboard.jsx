@@ -32,7 +32,7 @@ import {
 const ProfileDashboard = () => {
 	const [user] = useState({
 		name: 'Alex DealMaster',
-		email: 'alex.dealmaster@digiagis.com',
+			   email: 'alex.dealmaster@sorella.demo',
 		phone: '+234 812 345 6789',
 		location: 'Abuja, Nigeria',
 		userType: 'Deal Initiator',

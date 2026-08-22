@@ -16,6 +16,9 @@ import {
   Visibility,
   VisibilityOff,
   Person,
+  AdminPanelSettings,
+  BusinessCenter,
+  HomeWork,
 } from '@mui/icons-material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -58,12 +61,16 @@ const Login = () => {
     
     if (result.success) {
       // Route based on user type
-      if (result.user.userType === 'admin') {
-        navigate('/founder-dashboard');
+      if (result.user.userType === 'super-admin') {
+        navigate('/super-admin');
+      } else if (result.user.userType === 'admin') {
+        navigate('/admin');
+      } else if (result.user.userType === 'deal-initiator') {
+        navigate('/deal-initiator');
       } else if (result.user.userType === 'agent') {
         navigate('/agent-dashboard');
       } else {
-        navigate('/marketplace');
+        navigate('/buyer-dashboard');
       }
     } else {
       setError(result.error || 'Invalid email or password');
@@ -71,22 +78,12 @@ const Login = () => {
     setLoading(false);
   };
 
-  // Only demo accounts for Buyer/Seller
   const demoAccounts = [
-    {
-      type: 'user',
-      icon: <Person />,
-      email: 'buyer@demo.com',
-      password: 'demo123',
-      label: 'Buyer Demo'
-    },
-    {
-      type: 'user',
-      icon: <Person />,
-      email: 'seller@demo.com',
-      password: 'demo123',
-      label: 'Seller Demo'
-    },
+    { icon: <AdminPanelSettings />, email: 'superadmin@sorella.demo', password: 'demo123', label: 'Super Admin' },
+    { icon: <AdminPanelSettings />, email: 'admin@sorella.demo', password: 'demo123', label: 'Admin' },
+    { icon: <BusinessCenter />, email: 'deals@sorella.demo', password: 'demo123', label: 'Deal Initiator' },
+    { icon: <BusinessCenter />, email: 'agent@sorella.demo', password: 'demo123', label: 'Agent' },
+    { icon: <HomeWork />, email: 'buyer@sorella.demo', password: 'demo123', label: 'Buyer' },
   ];
 
   const handleDemoLogin = (demoEmail, demoPassword) => {
@@ -100,7 +97,7 @@ const Login = () => {
   return (
     <AuthLayout
       title="Welcome Back"
-      subtitle="Sign in to your DigiAGIS account"
+      subtitle="Sign in to your Sorella Real Estate account"
     >
       <form onSubmit={handleSubmit}>
         {error && (
@@ -189,10 +186,10 @@ const Login = () => {
           </Typography>
         </Divider>
 
-        {/* Demo Accounts - Only Buyer/Seller */}
+        {/* Demo accounts provide one-click access to each role. */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Quick demo access for buyers/sellers:
+            Quick demo access:
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {demoAccounts.map((account, index) => (
@@ -213,7 +210,7 @@ const Login = () => {
         {/* Official Account Instructions */}
         <Alert severity="info" sx={{ mb: 2 }}>
           <Typography variant="body2">
-            <strong>Agents & Admins:</strong> Use your official DigiAGIS email address provided by the platform administrator.
+            <strong>Agents & Admins:</strong> Use your official Sorella email address provided by the platform administrator.
           </Typography>
         </Alert>
 

@@ -18,7 +18,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4 }}>
           <VerifiedUser sx={{ fontSize: 48, color: 'white', mr: 2 }} />
           <Typography variant="h3" fontWeight="bold" color="white">
-            DigiAGIS
+            Sorella Real Estate
           </Typography>
         </Box>
 

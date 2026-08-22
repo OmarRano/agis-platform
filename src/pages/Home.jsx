@@ -32,7 +32,7 @@ const Home = () => {
             Find Your Perfect Plot, Verified & Secure
           </Typography>
           <Typography variant="h5" gutterBottom sx={{ mb: 4, opacity: 0.9 }}>
-            Nigeria's Trusted Digital Marketplace for AGIS-Verified Property Deals
+            Africa's Premier Real Estate Platform for verified property deals
           </Typography>
           
           {/* Search Bar */}
@@ -98,7 +98,7 @@ const Home = () => {
       {/* Features Section */}
       <Container sx={{ py: 8 }}>
         <Typography variant="h3" component="h2" textAlign="center" gutterBottom>
-          Why Choose DigiAGIS?
+          Why Choose Sorella Real Estate?
         </Typography>
         <Grid container spacing={4} sx={{ mt: 2 }}>
           <Grid item xs={12} md={3}>

@@ -221,7 +221,7 @@ const Verification = () => {
                       <ListItemText primary={req} />
                     </ListItem>
                   ))}
-                </List># DigiAGIS Platform: Software Architecture Document
+                </List># Sorella Real Estate: Software Architecture Document
 
 ## 1. Executive Summary
 
@@ -250,7 +250,7 @@ A platform that introduces Deal Initiators as intermediaries who facilitate conn
           └──────────────────────┼───────────────────────┘
                                  │
                   ┌──────────────┴──────────────┐
-                  │   DigiAGIS Platform         │
+                  │   Sorella Real Estate       │
                   │   (Orchestration Layer)     │
                   └──────────────┬──────────────┘
                                  │
@@ -264,7 +264,7 @@ A platform that introduces Deal Initiators as intermediaries who facilitate conn
 
 #### 2.2.1 User Management Module
 - **Buyer/Seller Registration**: Normal email registration with property preferences
-- **Agent Onboarding**: Official @digiagis emails with AGIS certification verification
+- **Agent Onboarding**: Official @sorella emails with AGIS certification verification
 - **Deal Initiator Program**: Platform-employed DIs with specialized training
 - **Admin/Funder Access**: Platform oversight and agent management
 
@@ -450,7 +450,7 @@ Total Commission: 5%
 - **DI Contracts**: Confidentiality and non-compete agreements
 - **Buyer Terms**: Platform usage and commission acknowledgment
 - **Penalty System**: Fines and platform banning for violations
-# DigiAGIS Platform: Software Architecture Document
+# Sorella Real Estate: Software Architecture Document
 
 ## 1. Executive Summary
 
@@ -479,7 +479,7 @@ A platform that introduces Deal Initiators as intermediaries who facilitate conn
           └──────────────────────┼───────────────────────┘
                                  │
                   ┌──────────────┴──────────────┐
-                  │   DigiAGIS Platform         │
+                  │   Sorella Real Estate       │
                   │   (Orchestration Layer)     │
                   └──────────────┬──────────────┘
                                  │
@@ -493,7 +493,7 @@ A platform that introduces Deal Initiators as intermediaries who facilitate conn
 
 #### 2.2.1 User Management Module
 - **Buyer/Seller Registration**: Normal email registration with property preferences
-- **Agent Onboarding**: Official @digiagis emails with AGIS certification verification
+- **Agent Onboarding**: Official @sorella emails with AGIS certification verification
 - **Deal Initiator Program**: Platform-employed DIs with specialized training
 - **Admin/Funder Access**: Platform oversight and agent management
 
@@ -709,7 +709,7 @@ Total Commission: 5%
 - **Commission Revenue**: Total platform earnings
 - **User Growth**: New buyers, sellers, agents, DIs
 - **Retention Rates**: User and agent platform loyalty
-# DigiAGIS Platform: Software Architecture Document
+# Sorella Real Estate: Software Architecture Document
 
 ## 1. Executive Summary
 
@@ -738,7 +738,7 @@ A platform that introduces Deal Initiators as intermediaries who facilitate conn
           └──────────────────────┼───────────────────────┘
                                  │
                   ┌──────────────┴──────────────┐
-                  │   DigiAGIS Platform         │
+                  │   Sorella Real Estate       │
                   │   (Orchestration Layer)     │
                   └──────────────┬──────────────┘
                                  │
@@ -752,7 +752,7 @@ A platform that introduces Deal Initiators as intermediaries who facilitate conn
 
 #### 2.2.1 User Management Module
 - **Buyer/Seller Registration**: Normal email registration with property preferences
-- **Agent Onboarding**: Official @digiagis emails with AGIS certification verification
+- **Agent Onboarding**: Official @sorella emails with AGIS certification verification
 - **Deal Initiator Program**: Platform-employed DIs with specialized training
 - **Admin/Funder Access**: Platform oversight and agent management
 

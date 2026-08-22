@@ -1,6 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const AuthContext = createContext();
+const STORAGE_KEY = 'sorella_user';
+const DEMO_ACCOUNTS = {
+  'superadmin@sorella.demo': { id: 1, name: 'Sorella Super Admin', userType: 'super-admin', isVerified: true, permissions: ['all'] },
+  'admin@sorella.demo': { id: 2, name: 'Sorella Admin', userType: 'admin', isVerified: true, permissions: ['manage-agents', 'manage-listings'] },
+  'deals@sorella.demo': { id: 3, name: 'Certified Deal Initiator', userType: 'deal-initiator', isVerified: true, tier: 'GOLD' },
+  'agent@sorella.demo': { id: 4, name: 'Certified Sorella Agent', userType: 'agent', isVerified: true, trustScore: 95, sorellaId: 'SRE-001' },
+  'buyer@sorella.demo': { id: 5, name: 'Demo Buyer', userType: 'buyer', isVerified: true },
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -16,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check if user is logged in on app start
-    const storedUser = localStorage.getItem('digiagis_user');
+    const storedUser = localStorage.getItem(STORAGE_KEY);
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -29,14 +37,18 @@ export const AuthProvider = ({ children }) => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Determine user type based on email domain
-      let userData = {};
+      const normalizedEmail = email.trim().toLowerCase();
+      const demoAccount = DEMO_ACCOUNTS[normalizedEmail];
+      if (demoAccount && password !== 'demo123') {
+        return { success: false, error: 'Invalid email or password' };
+      }
+      let userData = demoAccount ? { ...demoAccount } : {};
 
       // Admin detection
-      if (email === 'umar.admin@demo.com' || email.includes('@digiagis.admin') || email.includes('admin@digiagis')) {
+      if (!demoAccount && (normalizedEmail === 'umar.admin@demo.com' || normalizedEmail.includes('@digiagis.admin') || normalizedEmail.includes('admin@digiagis'))) {
         userData = {
           id: 1,
-          email: email,
+          email: normalizedEmail,
           name: 'Platform Administrator',
           userType: 'admin',
           avatar: '/api/placeholder/40/40',
@@ -46,10 +58,10 @@ export const AuthProvider = ({ children }) => {
         };
       }
       // Deal Initiator detection - official deal initiator emails
-      else if (email.includes('@digiagis.dealinitiator') || email.includes('dealinitiator@digiagis')) {
+      else if (!demoAccount && (normalizedEmail.includes('@digiagis.dealinitiator') || normalizedEmail.includes('dealinitiator@digiagis'))) {
         userData = {
           id: 4,
-          email: email,
+          email: normalizedEmail,
           name: 'Certified Deal Initiator',
           userType: 'deal-initiator',
           avatar: '/api/placeholder/40/40',
@@ -59,10 +71,10 @@ export const AuthProvider = ({ children }) => {
         };
       }
       // Agent detection - official agent emails
-      else if (email.includes('@digiagis.agent') || email.includes('agent@digiagis') || (email.includes('@digiagis') && !email.includes('admin') && !email.includes('dealinitiator'))) {
+      else if (!demoAccount && (normalizedEmail.includes('@digiagis.agent') || normalizedEmail.includes('agent@digiagis') || (normalizedEmail.includes('@digiagis') && !normalizedEmail.includes('admin') && !normalizedEmail.includes('dealinitiator')))) {
         userData = {
           id: 2,
-          email: email,
+          email: normalizedEmail,
           name: 'Certified Agent',
           userType: 'agent',
           avatar: '/api/placeholder/40/40',
@@ -74,10 +86,10 @@ export const AuthProvider = ({ children }) => {
       }
       // Buyer/Seller - normal email addresses
       else {
-        const namePrefix = email.split('@')[0];
+        const namePrefix = normalizedEmail.split('@')[0];
         userData = {
           id: 3,
-          email: email,
+          email: normalizedEmail,
           name: namePrefix.includes('buyer') ? 'Demo Buyer' : namePrefix.includes('seller') ? 'Demo Seller' : 'Demo User',
           userType: 'user',
           avatar: '/api/placeholder/40/40',
@@ -87,7 +99,9 @@ export const AuthProvider = ({ children }) => {
       }
 
       setUser(userData);
-      localStorage.setItem('digiagis_user', JSON.stringify(userData));
+      userData.email = userData.email || normalizedEmail;
+      userData.joinDate = userData.joinDate || '2024-01-01';
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
       return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error.message };
@@ -104,19 +118,19 @@ export const AuthProvider = ({ children }) => {
       
       // For agents, check if email is official
       if (userData.userType === 'agent') {
-        if (!userData.email.includes('@digiagis')) {
+          if (!userData.email.includes('@sorella')) {
           return { 
             success: false, 
-            error: 'Agents must use official DigiAGIS email addresses provided by the platform administrator.' 
+            error: 'Agents must use official Sorella email addresses provided by the platform administrator.'
           };
         }
       }
       // For deal-initiators, check if email is official
       if (userData.userType === 'deal-initiator') {
-        if (!userData.email.includes('@digiagis.dealinitiator')) {
+        if (!userData.email.includes('@sorella')) {
           return {
             success: false,
-            error: 'Deal Initiators must use official DigiAGIS deal initiator email addresses provided by the platform administrator.'
+            error: 'Deal Initiators must use official Sorella email addresses provided by the platform administrator.'
           };
         }
       }
@@ -131,7 +145,7 @@ export const AuthProvider = ({ children }) => {
       };
       
       setUser(newUser);
-      localStorage.setItem('digiagis_user', JSON.stringify(newUser));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
       return { success: true, user: newUser };
     } catch (error) {
       return { success: false, error: error.message };
@@ -142,7 +156,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('digiagis_user');
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   const value = {

@@ -43,12 +43,12 @@ const Footer = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <VerifiedUser sx={{ fontSize: 32, color: '#4CAF50', mr: 1 }} />
               <Typography variant="h5" fontWeight="bold">
-                DigiAGIS
+                Sorella Real Estate
               </Typography>
             </Box>
             
             <Typography variant="body2" sx={{ mb: 3, opacity: 0.8, lineHeight: 1.6 }}>
-              Nigeria's trusted digital marketplace for AGIS-verified property deals. 
+              Africa's trusted digital marketplace for verified property deals. 
               Connecting buyers, sellers, and certified agents with secure, documented 
               property transactions.
             </Typography>
@@ -350,8 +350,8 @@ const Footer = () => {
                       Email
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                      hello@digiagis.com<br />
-                      support@digiagis.com
+                      hello@sorella.realestate<br />
+                      support@sorella.realestate
                     </Typography>
                   </Box>
                 </Box>
@@ -389,7 +389,7 @@ const Footer = () => {
           gap: 2 
         }}>
           <Typography variant="body2" sx={{ opacity: 0.7 }}>
-            © 2024 DigiAGIS. All rights reserved. | AGIS Certified Property Marketplace
+            © 2024 Sorella Real Estate. All rights reserved. | Verified Property Marketplace
           </Typography>
           
           <Box sx={{ display: 'flex', gap: 3 }}>
@@ -441,7 +441,7 @@ const Footer = () => {
           }}>
             <Box>
               <Typography variant="h6" gutterBottom fontWeight="bold">
-                Get the DigiAGIS Mobile App
+                Get the Sorella Mobile App
               </Typography>
               <Typography variant="body2" sx={{ opacity: 0.8 }}>
                 Access verified properties, instant verification, and agent services on the go.

@@ -87,7 +87,7 @@ const ForgotPassword = () => {
 				)}
 
 				<Alert severity="info" sx={{ mb: 3 }}>
-					Enter the email address associated with your DigiAGIS account. We'll send you instructions to reset your password.
+									 Enter the email address associated with your Sorella Real Estate account. We'll send you instructions to reset your password.
 				</Alert>
 
 				<TextField
